@@ -1,0 +1,66 @@
+.main{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 100%;
+    background-color: #202020;
+    color: white;
+    min-height: 100vh;
+
+    
+    .header{
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+        gap: 25px;
+        border-bottom:1px solid grey ;
+        height: 120px;
+        padding-left: 20px;
+        .naming{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+            
+            .svgbox{
+                width: 40px;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: linear-gradient(0.4turn, #6C73DA, #7167C8, #7555AF);
+                border-radius: 30%;
+            }
+            
+            .namingtxt{
+                
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                
+                p {
+                    margin: 0;
+                    font-size: 15px;
+                }
+            }
+        }
+        .searchcont{
+            svg{
+                position: absolute;
+             margin-top: 9px;
+             margin-left: 10px;
+            }
+            input{
+                width: 80%;
+                height: 30px;
+                padding-left: 40px;
+                outline: 1px solid #404040;
+                border-radius: 7px;
+                background: #2B2B2B;
+                border: none;
+                color: white;
+            }
+
+        }
+    }
+}

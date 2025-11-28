@@ -48,7 +48,7 @@ function Regmodule() {
         showNotification('Вход выполнен успешно!', 'success');
  
         setTimeout(() => {
-            navigate('/main');
+            navigate('/');
         }, 1500);
     };
 

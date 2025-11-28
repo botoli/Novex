@@ -33,10 +33,11 @@ const userSlice = createSlice({
     setPassword: (state: UserState, action: PayloadAction<string>) => {
       state.password = action.payload;
     },
-    setUserData: (state: UserState, action: PayloadAction<{name: string; email: string; password: string}>) => {
+    setUserData: (state: UserState, action: PayloadAction<{name: string; email: string; password: string;isVerified:boolean}>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.password = action.payload.password;
+      state.isVerified = action.payload.isVerified;
     },
     setVerificationCode: (state: UserState, action: PayloadAction<string>) => {
       state.verificationCode = action.payload;

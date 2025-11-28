@@ -54,7 +54,8 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
         },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password
+          password: formData.password,
+          
         }),
       });
 
@@ -68,7 +69,8 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
         dispatch(setUserData({
           name: loginData.user.name,
           email: loginData.user.email,
-          password: formData.password
+          password: formData.password,
+          isVerified:true
         }));
         onSuccess();
       } else {
