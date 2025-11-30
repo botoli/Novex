@@ -1,4 +1,3 @@
-// Vhod.tsx
 import React, { useState } from 'react';
 import style from "../../style/Form/Vhod.module.scss";
 import { useDispatch } from 'react-redux';
@@ -55,7 +54,7 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          
+
         }),
       });
 
@@ -70,7 +69,8 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
           name: loginData.user.name,
           email: loginData.user.email,
           password: formData.password,
-          isVerified:true
+          status: 'active', // ДОБАВЛЕНО
+          isVerified: true
         }));
         onSuccess();
       } else {
@@ -86,55 +86,55 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
   };
 
   return (
-    <div className={style.container}>
-      <h1>Вход</h1>
+      <div className={style.container}>
+        <h1>Вход</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className={style.inputGroup}>
-          <label htmlFor="email">Почта</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="your@email.com"
-            disabled={loading}
-            required
-            className={errors.email ? style.inputError : ''}
-          />
-          {errors.email && <span className={style.errorText}>{errors.email}</span>}
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className={style.inputGroup}>
+            <label htmlFor="email">Почта</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="your@email.com"
+                disabled={loading}
+                required
+                className={errors.email ? style.inputError : ''}
+            />
+            {errors.email && <span className={style.errorText}>{errors.email}</span>}
+          </div>
 
-        <div className={style.inputGroup}>
-          <label htmlFor="password">Пароль</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Введите ваш пароль"
-            disabled={loading}
-            required
-            className={errors.password ? style.inputError : ''}
-          />
-          {errors.password && <span className={style.errorText}>{errors.password}</span>}
-        </div>
+          <div className={style.inputGroup}>
+            <label htmlFor="password">Пароль</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Введите ваш пароль"
+                disabled={loading}
+                required
+                className={errors.password ? style.inputError : ''}
+            />
+            {errors.password && <span className={style.errorText}>{errors.password}</span>}
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={style.submitButton}
-        >
-          {loading ? 'Вход...' : 'Войти'}
-        </button>
+          <button
+              type="submit"
+              disabled={loading}
+              className={style.submitButton}
+          >
+            {loading ? 'Вход...' : 'Войти'}
+          </button>
 
-        <div className={style.registerLink}>
-          Нет аккаунта? <button type="button" onClick={onNavigateToRegistration} className={style.linkButton}>Зарегистрироваться</button>
-        </div>
-      </form>
-    </div>
+          <div className={style.registerLink}>
+            Нет аккаунта? <button type="button" onClick={onNavigateToRegistration} className={style.linkButton}>Зарегистрироваться</button>
+          </div>
+        </form>
+      </div>
   );
 }
 

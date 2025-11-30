@@ -6,6 +6,7 @@ interface UserState {
   name: string;
   email: string;
   password: string;
+  status:string;
   verificationCode: string;
   isVerified: boolean;
   isSending: boolean;
@@ -15,6 +16,7 @@ const initialState: UserState = {
   name: "",
   email: "",
   password: "",
+  status:"",
   verificationCode: "",
   isVerified: false,
   isSending: false,
@@ -33,10 +35,11 @@ const userSlice = createSlice({
     setPassword: (state: UserState, action: PayloadAction<string>) => {
       state.password = action.payload;
     },
-    setUserData: (state: UserState, action: PayloadAction<{name: string; email: string; password: string;isVerified:boolean}>) => {
+    setUserData: (state: UserState, action: PayloadAction<{name: string; email: string; password: string;status:string;isVerified:boolean}>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.password = action.payload.password;
+      state.status=action.payload.status;
       state.isVerified = action.payload.isVerified;
     },
     setVerificationCode: (state: UserState, action: PayloadAction<string>) => {

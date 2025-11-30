@@ -1,4 +1,3 @@
-// EmailCheck.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, setVerificationCode, setVerified } from '../../store/user';
@@ -6,14 +5,14 @@ import emailjs from '@emailjs/browser';
 import style from "../../style/Form/EmailCheck.module.scss";
 
 interface EmailCheckProps {
-  onSuccess?: () => void;
-  onNotification?: (message: string, type: 'success' | 'error') => void;
+    onSuccess?: () => void;
+    onNotification?: (message: string, type: 'success' | 'error') => void;
 }
 
 function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
-    const { name, email, password } = useSelector(selectUser);
+    const { name, email, password, status } = useSelector(selectUser);
     const dispatch = useDispatch();
-    const [conf,setConf]=useState(false);
+    const [conf, setConf] = useState(false);
     const [code, setCode] = useState<string[]>(['', '', '', '', '', '']);
     const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
@@ -22,9 +21,9 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     const EMAILJS_CONFIG = {
-        serviceId: 'service_aqxioho', 
-        templateId: 'template_wtb954d', 
-        publicKey: 'Z_jLCC7KkwuPkxQkL' 
+        serviceId: 'service_aqxioho',
+        templateId: 'template_wtb954d',
+        publicKey: 'Z_jLCC7KkwuPkxQkL'
     };
 
     const generateVerificationCode = (): string => {
@@ -36,11 +35,11 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
 
         try {
             const verificationCode = generateVerificationCode();
-            
+
             // Сохраняем сгенерированный код для последующей проверки
             setGeneratedCode(verificationCode);
             dispatch(setVerificationCode(verificationCode));
-    
+
             const templateParams = {
                 to_name: name,
                 to_email: email,
@@ -69,7 +68,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
 
         } catch (error: any) {
             console.error('Ошибка отправки email:', error);
-            
+
             if (error.text?.includes('Gmail_API') || error.text?.includes('insufficient authentication')) {
                 onNotification?.('Ошибка настройки email сервиса. Пожалуйста, используйте EmailJS сервис вместо Gmail.', 'error');
             } else {
@@ -96,7 +95,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
             const newCode = [...code];
             newCode[index] = value;
             setCode(newCode);
-       
+
             console.log('Текущий введенный код:', newCode.join(''));
 
             if (value && index < 5) {
@@ -114,12 +113,11 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const verificationCode = code.join('');
-        
+
         if (verificationCode.length !== 6) {
             onNotification?.('Пожалуйста, введите все 6 цифр кода', 'error');
             return;
         }
-
 
         if (verificationCode !== generatedCode) {
             onNotification?.('Неверный код подтверждения', 'error');
@@ -129,7 +127,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
         setLoading(true);
 
         try {
-          
+
             const response = await fetch('http://127.0.0.1:8000/api/create', {
                 method: 'POST',
                 headers: {
@@ -140,6 +138,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
                     name: name,
                     email: email,
                     password: password,
+                    status: status,
                     verification_code: verificationCode
                 }),
             });
@@ -150,7 +149,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
                 onNotification?.('Регистрация завершена успешно!', 'success');
 
                 dispatch(setVerified(true));
-                
+
                 setTimeout(() => {
                     onSuccess?.();
                 }, 1500);
@@ -183,7 +182,11 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
                     {code.map((digit, index) => (
                         <input
                             key={index}
-                            ref={el => inputRefs.current[index] = el}
+                            ref={el => {
+                                if (el) {
+                                    inputRefs.current[index] = el;
+                                }
+                            }} // ИСПРАВЛЕНО
                             type="text"
                             inputMode="numeric"
                             pattern="[0-9]*"
@@ -209,8 +212,8 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
 
             <div className={style.resendSection}>
                 <p>Не получили код?</p>
-                <button 
-                    type="button" 
+                <button
+                    type="button"
                     className={style.resendButton}
                     onClick={handleResendCode}
                     disabled={sending}

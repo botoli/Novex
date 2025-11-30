@@ -16,6 +16,7 @@ class AuthController
             'name' => '',
             'email' => '',
             'password' => '',
+            'status'=>'',
         ]);
 
         if ($validator->fails()) {
@@ -31,6 +32,7 @@ class AuthController
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'status'=>$request->status,
             ]);
 
             return response()->json([

@@ -1,4 +1,3 @@
-// Registration.tsx
 import React, { useState } from 'react'
 import style from "../../style/Form/Registration.module.scss"
 import { useDispatch } from 'react-redux';
@@ -9,6 +8,7 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
+  status:string;
 }
 
 interface RegistrationProps {
@@ -23,6 +23,7 @@ function Registration({ onSuccess, onError, onNavigateToLogin }: RegistrationPro
     email: '',
     password: '',
     confirmPassword: '',
+    status:'Free'
   })
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false)
@@ -68,7 +69,7 @@ function Registration({ onSuccess, onError, onNavigateToLogin }: RegistrationPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -80,7 +81,9 @@ function Registration({ onSuccess, onError, onNavigateToLogin }: RegistrationPro
       dispatch(setUserData({
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        status: formData.status,
+        isVerified: false // ДОБАВЛЕНО
       }));
 
       const checkResponse = await fetch(`http://127.0.0.1:8000/api/check-user?email=${encodeURIComponent(formData.email)}&name=${encodeURIComponent(formData.name)}`, {
