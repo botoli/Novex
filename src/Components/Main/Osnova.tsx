@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import style from "../../style/Main/Osnova.module.scss";
 import { osnovaIcons } from "../../assets/LeftPanel/index.js";
 import { 
@@ -7,10 +7,44 @@ import {
   projectsData, 
   activitiesData 
 } from "../../assets/Osnova/index.js";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUser, setVerificationCode, setVerified } from '../../store/user';
 const Osnova = () => {
   const [activeProject, setActiveProject] = useState<number | null>(null);
+  const user=useSelector(selectUser);
+  console.log(user.id)
+  useEffect(()=>{
+    const zapros = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/createProj', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            tittle: 'dddd', 
+            description: 'dsdsd',
+            owner_id: user.id,
+          }),
+        });
+        
+        const data = await response.json();
+        console.log(data);
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Something went wrong');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    
+    zapros();
 
+ 
+
+  },[]);
   const statIcons = {
     members: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
