@@ -20,9 +20,15 @@ interface Project {
 
 interface LeftPanelProps {
   onPageChange?: (page: string) => void;
+  currentPage?: "main" | "projects";
+  onProjectClick?: (projectId: number) => void;
 }
 
-function LeftPanel({ onPageChange }: LeftPanelProps) {
+function LeftPanel({
+  onPageChange,
+  currentPage,
+  onProjectClick,
+}: LeftPanelProps) {
   const user = useSelector(selectUser);
   const [activeCategory, setActiveCategory] = useState(0);
   const [chatMessage, setChatMessage] = useState("");
@@ -34,13 +40,30 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
   const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
 
+  useEffect(() => {
+    if (currentPage === "projects") {
+      const projectsIndex = leftPanelIcons.findIndex(
+        (icon) => icon.name === "Проекты"
+      );
+      if (projectsIndex !== -1) {
+        setActiveCategory(projectsIndex);
+      }
+    } else if (currentPage === "main") {
+      const mainIndex = leftPanelIcons.findIndex(
+        (icon) => icon.name === "Главная"
+      );
+      if (mainIndex !== -1) {
+        setActiveCategory(mainIndex);
+      }
+    }
+  }, [currentPage]);
+
   const suggestions = [
     "Обзор дорожной карты Q4",
     "Обновить документацию дизайн-системы",
     "Запланировать синхронизацию команды",
   ];
 
-  // Получаем 3 последних проекта
   const recentProjects = userProjects
     .sort(
       (a, b) =>
@@ -55,12 +78,10 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
   const fetchUserProjects = async () => {
     try {
       setProjectsLoading(true);
-      // Используем getAllProjects вместо getUserProjects
       const projects = await ProjectService.getAllProjects();
       setUserProjects(projects);
     } catch (error) {
       console.error("Ошибка загрузки проектов:", error);
-      // Устанавливаем пустой массив
       setUserProjects([]);
     } finally {
       setProjectsLoading(false);
@@ -78,7 +99,6 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
   const handleNewProject = () => {
     setIsModalOpen(true);
     setError("");
-    // Обновляем список проектов при открытии модалки
     fetchUserProjects();
   };
 
@@ -103,12 +123,10 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
       const newProject = await ProjectService.createProject({
         tittle: tittle.trim(),
         description: description.trim(),
-        // Используем ID пользователя если он есть, иначе 1 по умолчанию
         owner_id: user?.id || 1,
       });
 
       console.log("Проект успешно создан:", newProject);
-      // Обновляем список проектов
       fetchUserProjects();
       closeModal();
     } catch (error) {
@@ -122,23 +140,42 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
   const handleCategoryClick = (index: number, categoryName: string) => {
     setActiveCategory(index);
 
-    if (categoryName === "Проекты" && onPageChange) {
-      onPageChange("projects");
-    } else if (onPageChange && categoryName !== "Проекты") {
-      onPageChange("main");
+    if (onPageChange) {
+      if (categoryName === "Проекты") {
+        onPageChange("projects");
+      } else if (categoryName === "Главная") {
+        onPageChange("main");
+      } else {
+        onPageChange("main");
+      }
     }
   };
 
   const handleProjectClick = (projectId: number) => {
-    console.log("Открыть проект:", projectId);
+    console.log("Открыть проект из левой панели:", projectId);
+    if (onProjectClick) {
+      onProjectClick(projectId);
+    }
     if (onPageChange) {
       onPageChange("projects");
+      const projectsIndex = leftPanelIcons.findIndex(
+        (icon) => icon.name === "Проекты"
+      );
+      if (projectsIndex !== -1) {
+        setActiveCategory(projectsIndex);
+      }
     }
   };
 
   const handleViewAllProjects = () => {
     if (onPageChange) {
       onPageChange("projects");
+      const projectsIndex = leftPanelIcons.findIndex(
+        (icon) => icon.name === "Проекты"
+      );
+      if (projectsIndex !== -1) {
+        setActiveCategory(projectsIndex);
+      }
     }
   };
 

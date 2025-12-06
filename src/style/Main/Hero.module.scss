@@ -148,75 +148,11 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.quickActions {
-  padding: 0 24px;
-  margin-top: 24px;
-  display: flex;
-  gap: 16px;
-  z-index: 10;
-}
-
-.quickBtn {
-  all: unset;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  width: calc(25% - 12px);
-  height: 130px;
-  background: $bg-card;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-2xl;
-  backdrop-filter: blur(12px);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  transition: $transition-smooth;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    border-radius: 15px;
-    opacity: 1;
-    z-index: 1;
-    transition: opacity 0.3s ease;
-  }
-
-  &[data-gradient="blue"]::before {
-    background: $gradient-blue;
-  }
-  &[data-gradient="purple"]::before {
-    background: $gradient-purple;
-  }
-  &[data-gradient="orange"]::before {
-    background: $gradient-orange;
-  }
-  &[data-gradient="green"]::before {
-    background: $gradient-green;
-  }
-
-  &:hover {
-    background-color: #1d1d1f;
-  }
-}
-
-.quickIcon {
-  z-index: 2;
-}
-
-.quickBtn span {
-  font-family: "Inter", sans-serif;
-  font-size: $font-size-md;
-  color: rgba(255, 255, 255, 0.8);
-  transition: color 0.3s ease;
-  z-index: 2;
-}
-
-.projectsSection,
-.activitySection {
+// Секции
+.userSection,
+.teamSection,
+.deadlinesSection,
+.quickAccessSection {
   margin: 32px 24px;
   background: $bg-card;
   border: 1px solid $border-color;
@@ -257,10 +193,95 @@
   gap: 4px;
 }
 
-.projectCards {
+// Информация о пользователе
+.userInfoSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-xl;
+}
+
+.userAvatar {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.avatarCircle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-2xl;
+  font-weight: 500;
+  color: white;
+}
+
+.onlineIndicator {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  background-color: #05df72;
+  border: 2px solid $bg-card;
+  border-radius: 50%;
+}
+
+.userDetails {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 4px;
+}
+
+.userName {
+  margin: 0;
+  font-size: $font-size-xl;
+  color: $text-main;
+}
+
+.userPosition {
+  margin: 0;
+  font-size: $font-size-md;
+  color: $text-secondary;
+}
+
+.userDepartment {
+  font-size: $font-size-sm;
+  color: $text-muted;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: $border-radius-md;
+  align-self: flex-start;
+}
+
+// Активные проекты
+.projectsSection {
+  margin: 32px 24px;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-2xl;
+  backdrop-filter: blur(12px);
+  padding: 24px;
+  z-index: 9;
+  width: calc(100% - 48px);
+  box-sizing: border-box;
+
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
 }
 
 .projectCard {
@@ -272,10 +293,17 @@
   flex-direction: column;
   gap: 12px;
   transition: $transition-default;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     border-color: $border-color;
     background: rgba(255, 255, 255, 0.08);
+  }
+
+  &.active {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.1);
   }
 }
 
@@ -330,87 +358,339 @@
   }
 }
 
-.progressContainer {
+// УЛУЧШЕННЫЙ ПРОГРЕСС-БАР
+.enhancedProgress {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
-.progressLabel {
+.progressHeader {
   display: flex;
   justify-content: space-between;
-  font-size: $font-size-xs;
-  color: $text-muted;
+  align-items: center;
+  margin-bottom: 4px;
+}
 
-  span:last-child {
-    color: $text-secondary;
-    font-size: $font-size-sm;
+.progressStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .statusIcon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    &.statusNotStarted {
+      opacity: 0.5;
+    }
+
+    &.statusEarly {
+      svg path {
+        stroke: #ff6464;
+      }
+    }
+
+    &.statusInProgress {
+      svg path {
+        stroke: #ffc864;
+      }
+    }
+
+    &.statusGood {
+      svg path {
+        stroke: #64c8ff;
+      }
+    }
+
+    &.statusAlmost {
+      svg path {
+        stroke: #64ff64;
+      }
+    }
+
+    &.statusCompleted {
+      svg path {
+        stroke: #00ff00;
+      }
+      animation: pulse-completed 2s infinite;
+    }
+  }
+
+  .statusText {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
   }
 }
 
+.progressTooltip {
+  position: relative;
+
+  .percentage {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: help;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .tooltip {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 8px;
+    min-width: 140px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    margin-top: 4px;
+
+    .tooltipItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 11px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .tooltipLabel {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .tooltipValue {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+      }
+    }
+  }
+
+  &:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(2px);
+  }
+}
+
+// ПРОГРЕСС-БАР
 .progressBar {
-  height: 8px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 999px;
+  border-radius: 3px;
   overflow: hidden;
+  position: relative;
 }
 
 .progressFill {
   height: 100%;
-  background: $gradient-primary;
-  border-radius: 999px;
+  border-radius: 3px;
   transition: width 0.6s ease;
 }
 
-.activityList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.activityItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 12px;
-  border-radius: $border-radius-lg;
-  transition: background 0.2s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
+@keyframes pulse-completed {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
   }
 }
 
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+.noProjects {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  color: $text-main;
-  font-size: $font-size-xl;
-  flex-shrink: 0;
+  min-height: 200px;
+  color: $text-secondary;
+  font-size: $font-size-lg;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: $border-radius-xl;
+  border: 1px dashed $border-light;
 }
 
-.activityContent {
+.projectCards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 200px;
+}
+
+// Команда проекта
+.teamCount {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: $border-radius-md;
+}
+
+.teamList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.teamMember {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-lg;
+  transition: $transition-default;
+
+  &:hover {
+    border-color: $border-color;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.memberAvatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.memberInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+}
 
-  p {
-    margin: 0;
-    font-size: $font-size-md;
-    color: $text-main;
-  }
+.memberName {
+  font-size: $font-size-md;
+  color: $text-main;
+}
 
-  span {
-    font-size: $font-size-xs;
-    color: $text-muted;
+.memberRole {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+// Дедлайны
+.deadlinesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deadlineItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-lg;
+  transition: $transition-default;
+
+  &:hover {
+    border-color: $border-color;
+    background: rgba(255, 255, 255, 0.08);
   }
+}
+
+.deadlineDate {
+  min-width: 60px;
+  padding: 6px 8px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  text-align: center;
+  border: 1px solid;
+}
+
+.deadlineInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.deadlineTitle {
+  font-size: $font-size-md;
+  color: $text-main;
+}
+
+.deadlinePriority {
+  font-size: $font-size-xs;
+  font-weight: 500;
+}
+
+// Быстрый доступ
+.quickAccessGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.quickAccessItem {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-lg;
+  transition: $transition-default;
+
+  &:hover {
+    border-color: $border-color;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.quickAccessIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.quickAccessTitle {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  text-align: center;
 }
 
 // Модальное окно активности
@@ -538,73 +818,53 @@
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-// Добавьте эти стили в конец Hero.module.scss
-
-.noProjects {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  color: $text-secondary;
-  font-size: $font-size-lg;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: $border-radius-xl;
-  border: 1px dashed $border-light;
-}
-
-// Убедитесь, что контейнер проектов правильно отображается
-.projectCards {
+.activityList {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: 200px;
+}
 
-  .projectCard {
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px;
+  border-radius: $border-radius-lg;
+  transition: background 0.2s;
+
+  &:hover {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid $border-light;
-    border-radius: $border-radius-xl;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: $transition-default;
-    width: 100%;
-    box-sizing: border-box;
-
-    &:hover {
-      border-color: $border-color;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    &.active {
-      border-color: $primary-color;
-      background: rgba($primary-color, 0.1);
-    }
   }
 }
 
-.projectsSection {
-  margin: 32px 24px;
-  background: $bg-card;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-2xl;
-  backdrop-filter: blur(12px);
-  padding: 24px;
-  z-index: 9;
-  width: calc(100% - 48px);
-  box-sizing: border-box;
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: $text-main;
+  font-size: $font-size-xl;
+  flex-shrink: 0;
+}
 
-  .sectionHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
+.activityContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  p {
+    margin: 0;
+    font-size: $font-size-md;
+    color: $text-main;
+  }
+
+  span {
+    font-size: $font-size-xs;
+    color: $text-muted;
   }
 }

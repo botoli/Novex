@@ -62,6 +62,166 @@ export const mockProjects = [
   },
 ];
 
+// Мок-данные пользователей
+export const mockUsers = [
+  {
+    id: 1,
+    name: "Алексей Иванов",
+    email: "alexey@example.com",
+    avatar: "АИ",
+    position: "Product Manager",
+    department: "Продукт",
+    status: "active",
+    online: true,
+  },
+  {
+    id: 2,
+    name: "Мария Петрова",
+    email: "maria@example.com",
+    avatar: "МП",
+    position: "UI/UX Designer",
+    department: "Дизайн",
+    status: "active",
+    online: true,
+  },
+  {
+    id: 3,
+    name: "Дмитрий Сидоров",
+    email: "dmitry@example.com",
+    avatar: "ДС",
+    position: "Frontend Developer",
+    department: "Разработка",
+    status: "active",
+    online: false,
+  },
+  {
+    id: 4,
+    name: "Елена Козлова",
+    email: "elena@example.com",
+    avatar: "ЕК",
+    position: "Backend Developer",
+    department: "Разработка",
+    status: "active",
+    online: true,
+  },
+  {
+    id: 5,
+    name: "Иван Николаев",
+    email: "ivan@example.com",
+    avatar: "ИН",
+    position: "QA Engineer",
+    department: "Тестирование",
+    status: "active",
+    online: true,
+  },
+];
+
+// Мок-данные команд проектов
+export const projectTeams = [
+  {
+    projectId: 1,
+    members: [
+      { userId: 1, role: "Руководитель проекта" },
+      { userId: 2, role: "Дизайнер" },
+      { userId: 3, role: "Разработчик" },
+      { userId: 4, role: "Разработчик" },
+      { userId: 5, role: "Тестировщик" },
+    ],
+  },
+  {
+    projectId: 2,
+    members: [
+      { userId: 1, role: "Руководитель проекта" },
+      { userId: 2, role: "Дизайнер" },
+      { userId: 3, role: "Разработчик" },
+    ],
+  },
+  {
+    projectId: 3,
+    members: [
+      { userId: 1, role: "Руководитель проекта" },
+      { userId: 3, role: "Ведущий разработчик" },
+      { userId: 4, role: "Разработчик" },
+      { userId: 5, role: "Тестировщик" },
+    ],
+  },
+];
+
+// Мок-данные дедлайнов
+export const deadlinesData = [
+  {
+    id: 1,
+    projectId: 1,
+    title: "Презентация дизайна",
+    date: "2025-12-15",
+    priority: "high",
+    status: "upcoming",
+  },
+  {
+    id: 2,
+    projectId: 2,
+    title: "Запуск бета-версии",
+    date: "2025-12-20",
+    priority: "medium",
+    status: "upcoming",
+  },
+  {
+    id: 3,
+    projectId: 3,
+    title: "Code Review",
+    date: "2025-12-10",
+    priority: "high",
+    status: "today",
+  },
+  {
+    id: 4,
+    projectId: 1,
+    title: "Синхронизация команды",
+    date: "2025-12-08",
+    priority: "low",
+    status: "completed",
+  },
+];
+
+// Быстрый доступ к функциям
+export const quickAccessData = [
+  {
+    id: 1,
+    title: "Создать отчет",
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>`,
+    action: "createReport",
+  },
+  {
+    id: 2,
+    title: "Планирование",
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+      <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    </svg>`,
+    action: "planning",
+  },
+  {
+    id: 3,
+    title: "Аналитика",
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>`,
+    action: "analytics",
+  },
+  {
+    id: 4,
+    title: "Документы",
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M9 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44772 3 5 3H16L20 7V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M16 3V7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 14H15M9 17H12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    </svg>`,
+    action: "documents",
+  },
+];
+
 // Мок-сервис для работы с проектами
 export const ProjectService = {
   // Получить проекты пользователя (мок версия)
@@ -69,7 +229,7 @@ export const ProjectService = {
     console.log(`[Mock API] Получение проектов пользователя ${userId}`);
 
     // Эмуляция задержки сети
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Фильтруем проекты по owner_id
     const userProjects = mockProjects.filter(
@@ -83,7 +243,7 @@ export const ProjectService = {
   getAllProjects: async () => {
     console.log("[Mock API] Получение всех проектов");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     return [...mockProjects];
   },
@@ -144,5 +304,38 @@ export const getStatusText = (status) => {
       return "Завершен";
     default:
       return "В работе";
+  }
+};
+
+// Хелпер для форматирования даты дедлайна
+export const formatDeadlineDate = (dateString) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  if (date.toDateString() === today.toDateString()) {
+    return "Сегодня";
+  } else if (date.toDateString() === tomorrow.toDateString()) {
+    return "Завтра";
+  } else {
+    return date.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+    });
+  }
+};
+
+// Хелпер для получения цвета приоритета
+export const getPriorityColor = (priority) => {
+  switch (priority) {
+    case "high":
+      return "#FF6467";
+    case "medium":
+      return "#FDC700";
+    case "low":
+      return "#667EEA";
+    default:
+      return "#667EEA";
   }
 };

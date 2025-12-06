@@ -31,7 +31,11 @@ const STATUS_FILTERS = [
   { id: "archived", label: "Архивные" },
 ];
 
-function ProjectsPage() {
+interface ProjectsPageProps {
+  onProjectClick?: (projectId: number) => void;
+}
+
+function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
   const user = useSelector(selectUser);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,6 +87,9 @@ function ProjectsPage() {
 
   const handleProjectClick = (projectId: number) => {
     console.log("Открыть проект:", projectId);
+    if (onProjectClick) {
+      onProjectClick(projectId);
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

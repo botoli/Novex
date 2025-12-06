@@ -1,10 +1,125 @@
-.main{
-    width: 100%;
-    height: 100vh;
-    background-color: #202020;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 100px;
+@import "../Main/variables.module";
+.container {
+  width: 100%;
+  height: 100vh;
+  background-color: $bg-panel; //
+  color: $text-main;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+}
+
+.content {
+  text-align: center;
+  z-index: 2;
+  padding: 2rem;
+}
+
+.subtitle {
+  font-size: 28px;
+  margin: 20px 0 12px;
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+.description {
+  font-size: 18px;
+  color: $text-muted;
+  max-width: 500px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.homeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid $glass-border;
+  border-radius: $border-radius-2xl;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  transition: $transition-smooth;
+  box-shadow: $shadow-card;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .arrow {
+    transform: translateX(6px);
+  }
+}
+
+// Плавающие частицы на фоне
+.particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  span {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: float 20s infinite linear;
+    animation-delay: calc(var(--i) * -2s);
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) translateX(0) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) translateX(100px) scale(1);
+        opacity: 0;
+      }
+    }
+
+    &:nth-child(1) {
+      left: 10%;
+      animation-duration: 18s;
+    }
+    &:nth-child(2) {
+      left: 20%;
+      animation-duration: 22s;
+    }
+    &:nth-child(3) {
+      left: 35%;
+      animation-duration: 15s;
+    }
+    &:nth-child(4) {
+      left: 50%;
+      animation-duration: 25s;
+    }
+    &:nth-child(5) {
+      left: 70%;
+      animation-duration: 20s;
+    }
+    &:nth-child(6) {
+      left: 85%;
+      animation-duration: 19s;
+    }
+  }
 }

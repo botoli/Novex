@@ -30,8 +30,12 @@ $gradient-blue: linear-gradient(135deg, #2b7fff 0%, #00b8db 100%);
 $gradient-purple: linear-gradient(135deg, #ad46ff 0%, #f6339a 100%);
 $gradient-orange: linear-gradient(135deg, #ff6900 0%, #fb2c36 100%);
 $gradient-green: linear-gradient(135deg, #00c950 0%, #00bc7d 100%);
-$gradient-primary: linear-gradient(90deg, #667eea, #764ba2);
-
+$gradient-primary: linear-gradient(
+  90deg,
+  #a8a8a8 0%,
+  #8c8c8c 50%,
+  #707070 100%
+);
 $shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5);
 $shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
 
