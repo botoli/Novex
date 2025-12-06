@@ -14,8 +14,8 @@ export const mockProjects = [
   },
   {
     id: 2,
-    tittle: "123",
-    description: "123",
+    tittle: "Лендинг",
+    description: "Разработка лендинга с понятным ux/ui",
     owner_id: 1,
     created_at: "2025-12-05T20:45:03.000Z",
     updated_at: "2025-12-05T20:45:03.000Z",

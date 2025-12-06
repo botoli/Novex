@@ -180,7 +180,8 @@
     position: absolute;
     inset: 1px;
     border-radius: 15px;
-    opacity: 0;
+    opacity: 1;
+    z-index: 1;
     transition: opacity 0.3s ease;
   }
 
@@ -203,12 +204,7 @@
 }
 
 .quickIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: $border-radius-xl;
-  background-color: #393744;
-  display: grid;
-  place-items: center;
+  z-index: 2;
 }
 
 .quickBtn span {
@@ -216,6 +212,7 @@
   font-size: $font-size-md;
   color: rgba(255, 255, 255, 0.8);
   transition: color 0.3s ease;
+  z-index: 2;
 }
 
 .projectsSection,

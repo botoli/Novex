@@ -19,7 +19,7 @@ interface Project {
 }
 
 interface LeftPanelProps {
-  onPageChange?: (page: "main" | "projects") => void;
+  onPageChange?: (page: string) => void;
 }
 
 function LeftPanel({ onPageChange }: LeftPanelProps) {
@@ -49,18 +49,19 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
     .slice(0, 3);
 
   useEffect(() => {
-    if (user.id) {
-      fetchUserProjects();
-    }
-  }, [user.id]);
+    fetchUserProjects();
+  }, []);
 
   const fetchUserProjects = async () => {
     try {
       setProjectsLoading(true);
-      const projects = await ProjectService.getUserProjects(user.id);
+      // Используем getAllProjects вместо getUserProjects
+      const projects = await ProjectService.getAllProjects();
       setUserProjects(projects);
     } catch (error) {
       console.error("Ошибка загрузки проектов:", error);
+      // Устанавливаем пустой массив
+      setUserProjects([]);
     } finally {
       setProjectsLoading(false);
     }
@@ -77,9 +78,8 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
   const handleNewProject = () => {
     setIsModalOpen(true);
     setError("");
-    if (user.id) {
-      fetchUserProjects();
-    }
+    // Обновляем список проектов при открытии модалки
+    fetchUserProjects();
   };
 
   const closeModal = () => {
@@ -103,10 +103,12 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
       const newProject = await ProjectService.createProject({
         tittle: tittle.trim(),
         description: description.trim(),
-        owner_id: user.id,
+        // Используем ID пользователя если он есть, иначе 1 по умолчанию
+        owner_id: user?.id || 1,
       });
 
       console.log("Проект успешно создан:", newProject);
+      // Обновляем список проектов
       fetchUserProjects();
       closeModal();
     } catch (error) {
@@ -278,27 +280,6 @@ function LeftPanel({ onPageChange }: LeftPanelProps) {
                             И еще {userProjects.length - 3} проектов
                           </div>
                         )}
-
-                        <div
-                          className={style.viewAllProjectsLink}
-                          onClick={handleViewAllProjects}
-                        >
-                          <span>Все проекты</span>
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M5 12h14M12 5l7 7-7 7"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
                       </>
                     )}
                   </div>
