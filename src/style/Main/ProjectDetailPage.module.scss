@@ -353,8 +353,8 @@
   }
 
   &:hover {
-    background: rgba(30, 30, 30, 0.95);
-    border-color: rgba($primary-purple, 0.5);
+    background: $state-hover-bg;
+    border-color: rgba($primary-purple, 0.3);
   }
 
   &[data-action="create-task"] {
@@ -431,5 +431,521 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* --- Стили для модального окна создания задачи --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-card;
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 24px;
+    width: calc(100% - 32px);
+  }
+}
+
+.modalTitle {
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  color: $text-main;
+  text-align: center;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: $font-size-md;
+    font-weight: 500;
+    color: $text-secondary;
+  }
+
+  input,
+  select,
+  textarea {
+    background: $input-bg;
+    border: $input-border;
+    border-radius: $border-radius-md;
+    padding: 14px 16px;
+    color: $text-main;
+    font-size: $font-size-md;
+    transition: $transition-default;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-purple;
+      box-shadow: $state-focus-ring;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 200px;
+    line-height: 1.5;
+    font-family: inherit;
+    padding: 16px;
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff99' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+}
+
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.cancelButton {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  color: $text-secondary;
+  padding: 12px 24px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  flex: 1;
+  font-family: inherit;
+
+  &:hover {
+    background: $state-hover-bg;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: $text-main;
+  }
+}
+
+.submitButton {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  color: $primary-purple;
+  padding: 12px 24px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  flex: 1;
+  font-family: inherit;
+
+  &:hover {
+    background: $state-hover-bg;
+    border-color: rgba($primary-purple, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* --- Календарь для дедлайна --- */
+.calendarOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+
+.calendarModal {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  width: 90%;
+  max-width: 450px; /* Увеличена максимальная ширина для лучшего пространства */
+  max-height: 90vh;
+  box-shadow: $shadow-card;
+  position: relative;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+}
+
+.calendarNavButton {
+  background: none;
+  border: none;
+  color: $text-secondary;
+  font-size: $font-size-xl;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: $border-radius-sm;
+  transition: $transition-default;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $state-hover-bg;
+    color: $text-main;
+  }
+}
+
+.calendarTitle {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $text-main;
+  text-align: center;
+  flex: 1;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  font-size: $font-size-sm;
+}
+
+.calendarDayHeader {
+  font-weight: 600;
+  color: $text-secondary;
+  text-align: center;
+  padding: 8px 4px;
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: $transition-default;
+  color: $text-main;
+  font-weight: 500;
+  position: relative;
+  background: rgba(255, 255, 255, 0.03); /* Нежный фоновый цвет для дней */
+
+  &:hover {
+    background: $state-hover-bg;
+  }
+
+  &.selected {
+    background: $primary-purple; /* Более выраженный фон для выбранного дня */
+    color: white; /* Белый текст для выбранного дня */
+    font-weight: 600;
+  }
+
+  &.today {
+    border: 2px solid $accent-blue; /* Другой акцентный цвет для рамки сегодняшнего дня */
+  }
+
+  &.other-month {
+    color: $text-secondary;
+    opacity: 0.5;
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+
+    &:hover {
+      background: none;
+    }
+  }
+}
+
+.calendarFooter {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid $border-light;
+}
+
+.calendarConfirmButton {
+  padding: 10px 20px;
+  background: $primary-purple;
+  border: none;
+  border-radius: $border-radius-md;
+  color: white;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.calendarCancelButton {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover {
+    background: $state-hover-bg;
+    color: $text-main;
+  }
+}
+
+/* --- Дополнительные стили для модалки --- */
+.datePickerGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dateButton {
+  background: rgba($primary-purple, 0.1);
+  border: 1px solid rgba($primary-purple, 0.3);
+  border-radius: $border-radius-md;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: $transition-default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+
+  &:hover {
+    background: rgba($primary-purple, 0.2);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: $state-focus-ring;
+  }
+}
+
+.dateInput {
+  flex: 1;
+}
+
+.teamMembersGroup {
+  position: relative;
+}
+
+.teamInput {
+  width: 100%;
+}
+
+.chipsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+  padding: 6px 12px;
+  font-size: $font-size-sm;
+  color: $text-main;
+  font-weight: 500;
+  max-width: calc(100% - 8px);
+
+  .chipRemove {
+    background: none;
+    border: none;
+    color: $text-secondary;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: $transition-default;
+
+    &:hover {
+      background: rgba($accent-red, 0.2);
+      color: $accent-red;
+    }
+  }
+}
+
+.formGroup small {
+  color: $text-secondary;
+  font-size: $font-size-xs;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* --- Стили для выбора команды --- */
+.selectTeamButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: $input-bg;
+  border: $input-border;
+  border-radius: $border-radius-md;
+  color: $text-main;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  font-family: inherit;
+
+  &:hover {
+    background: rgba($primary-purple, 0.05);
+    border-color: rgba($primary-purple, 0.3);
+  }
+
+  &.open {
+    border-color: $primary-purple;
+    box-shadow: $state-focus-ring;
+  }
+}
+
+.teamDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-card;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.teamOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: $transition-default;
+  border-bottom: 1px solid $border-light;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $state-hover-bg;
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: $primary-purple;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  span {
+    font-size: $font-size-md;
+    color: $text-main;
+    user-select: none;
+  }
+}
+
+.selectArrow {
+  width: 16px;
+  height: 16px;
+  color: $text-secondary;
+  transition: transform $transition-default ease;
+}
+
+.selectTeamButton.open .selectArrow {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 24px 20px;
+    width: calc(100% - 32px);
+  }
+
+  .modalButtons {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .submitButton {
+    padding: 14px 20px;
   }
 }

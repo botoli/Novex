@@ -23,12 +23,121 @@ interface Project {
   status?: string;
 }
 
+interface TaskData {
+  title: string;
+  description: string;
+  deadline: string;
+  teamMembers: string[];
+  gitBranch: string;
+}
+
 interface ProjectDetailPageProps {
   projectId: number;
   onBack?: () => void;
 }
 
 function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [taskData, setTaskData] = useState<TaskData>({
+    title: "",
+    description: "",
+    deadline: "",
+    teamMembers: [],
+    gitBranch: "",
+  });
+
+  const [showTeamDropdown, setShowTeamDropdown] = useState(false);
+  const teamMembersAvailable: string[] = [
+    "Иван Иванов",
+    "Петр Петров",
+    "Анна Сидорова",
+    "Михаил Кузнецов",
+  ];
+
+  const removeTeamMember = (memberToRemove: string) => {
+    setTaskData({
+      ...taskData,
+      teamMembers: taskData.teamMembers.filter(
+        (member) => member !== memberToRemove
+      ),
+    });
+  };
+
+  const handleDatePickerClick = () => {
+    setIsCalendarOpen(true);
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    );
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    );
+  };
+
+  const selectDate = (day: number) => {
+    const selectedDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day
+    );
+    const formattedDate = selectedDate.toLocaleDateString("ru-RU");
+    setTaskData({ ...taskData, deadline: formattedDate });
+    setIsCalendarOpen(false);
+  };
+
+  const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+  const getDaysInMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay() || 7;
+  };
+
+  const monthDays = [];
+  const firstDay = getFirstDayOfMonth(currentDate);
+  const daysInMonth = getDaysInMonth(currentDate);
+
+  // Пустые дни до начала месяца
+  for (let i = 1; i < firstDay; i++) {
+    monthDays.push({ day: 0, isOtherMonth: true });
+  }
+
+  // Дни месяца
+  for (let day = 1; day <= daysInMonth; day++) {
+    monthDays.push({ day, isOtherMonth: false });
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const handleTaskSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(
+      "Создание задачи для проекта",
+      projectId,
+      "с mock данными:",
+      taskData
+    );
+    // TODO: Здесь легко заменить на реальный fetch запрос к БД
+    // Например: await ProjectService.createTask(projectId, taskData);
+    setTaskData({
+      title: "",
+      description: "",
+      deadline: "",
+      teamMembers: [],
+      gitBranch: "",
+    });
+    setIsTaskModalOpen(false);
+  };
   const user = useSelector(selectUser);
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,13 +162,12 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
   };
 
   const handleCreateTask = () => {
-    console.log("Создать задачу для проекта:", projectId);
-    // Здесь будет логика создания задачи
+    setIsTaskModalOpen(true);
   };
 
   const handleTeamChat = () => {
     console.log("Открыть командный чат проекта:", projectId);
-    // Здесь будет логика открытия чата
+    // TODO: Здесь добавить логику для чата, например модалку или навигацию
   };
 
   const handleSchedule = () => {
@@ -339,6 +447,255 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
             <span>Быстрая заметка</span>
           </button>
         </div>
+
+        {/* Модальное окно создания задачи */}
+        {isTaskModalOpen && (
+          <div
+            className={style.modalOverlay}
+            onClick={() => setIsTaskModalOpen(false)}
+          >
+            <div
+              className={style.modalContent}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className={style.modalTitle}>Создать новую задачу</h2>
+
+              <form onSubmit={handleTaskSubmit} className={style.modalForm}>
+                <div className={style.formGroup}>
+                  <label htmlFor="task-title">Название задачи</label>
+                  <input
+                    id="task-title"
+                    type="text"
+                    value={taskData.title}
+                    onChange={(e) =>
+                      setTaskData({ ...taskData, title: e.target.value })
+                    }
+                    placeholder="Введите название задачи"
+                    required
+                  />
+                </div>
+
+                <div className={style.formGroup}>
+                  <label htmlFor="task-description">Описание задачи</label>
+                  <textarea
+                    id="task-description"
+                    value={taskData.description}
+                    onChange={(e) =>
+                      setTaskData({ ...taskData, description: e.target.value })
+                    }
+                    placeholder="Опишите задачу подробно..."
+                    rows={4}
+                  />
+                </div>
+
+                <div className={style.formGroup}>
+                  <label>Дедлайн</label>
+                  <div className={style.datePickerGroup}>
+                    <input
+                      type="text"
+                      value={taskData.deadline || ""}
+                      placeholder="Выберите дату дедлайна"
+                      readOnly
+                      className={style.dateInput}
+                    />
+                    <button
+                      type="button"
+                      className={style.dateButton}
+                      onClick={handleDatePickerClick}
+                    >
+                      📅
+                    </button>
+                  </div>
+                </div>
+
+                {/* Календарь дедлайна */}
+                {isCalendarOpen && (
+                  <div
+                    className={style.calendarOverlay}
+                    onClick={() => setIsCalendarOpen(false)}
+                  >
+                    <div
+                      className={style.calendarModal}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className={style.calendarHeader}>
+                        <button
+                          type="button"
+                          className={style.calendarNavButton}
+                          onClick={handlePrevMonth}
+                        >
+                          ‹
+                        </button>
+                        <div className={style.calendarTitle}>
+                          {currentDate.toLocaleDateString("ru-RU", {
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </div>
+                        <button
+                          type="button"
+                          className={style.calendarNavButton}
+                          onClick={handleNextMonth}
+                        >
+                          ›
+                        </button>
+                      </div>
+                      <div className={style.calendarGrid}>
+                        {daysOfWeek.map((day) => (
+                          <div key={day} className={style.calendarDayHeader}>
+                            {day}
+                          </div>
+                        ))}
+                        {monthDays.map((item, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            className={`
+                            ${style.calendarDay}
+                            ${item.day === 0 ? style.otherMonth : ""}
+                            ${
+                              item.day === today.getDate() &&
+                              currentDate.getMonth() === today.getMonth() &&
+                              currentDate.getFullYear() === today.getFullYear()
+                                ? style.today
+                                : ""
+                            }
+                            ${
+                              taskData.deadline &&
+                              new Date(taskData.deadline).getDate() === item.day
+                                ? style.selected
+                                : ""
+                            }
+                            ${item.day === 0 ? style.disabled : ""}
+                          `}
+                            onClick={() => item.day > 0 && selectDate(item.day)}
+                            disabled={item.day === 0}
+                          >
+                            {item.day || ""}
+                          </button>
+                        ))}
+                      </div>
+                      <div className={style.calendarFooter}>
+                        <button
+                          type="button"
+                          className={style.calendarCancelButton}
+                          onClick={() => setIsCalendarOpen(false)}
+                        >
+                          Отмена
+                        </button>
+                        <button
+                          type="button"
+                          className={style.calendarConfirmButton}
+                          disabled={!taskData.deadline}
+                          onClick={() => setIsCalendarOpen(false)}
+                        >
+                          Подтвердить
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className={style.formGroup}>
+                  <label>Члены команды</label>
+                  <div className={style.teamMembersGroup}>
+                    <button
+                      type="button"
+                      className={`${style.selectTeamButton} ${
+                        showTeamDropdown ? style.open : ""
+                      }`}
+                      onClick={() => setShowTeamDropdown((prev) => !prev)}
+                    >
+                      <span>
+                        {taskData.teamMembers.length === 0
+                          ? "Выбрать участников"
+                          : `Выбрано ${taskData.teamMembers.length} участник(ов)`}
+                      </span>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        className={style.selectArrow}
+                      >
+                        <path d="m6 8 4 4 4-4" />
+                      </svg>
+                    </button>
+                    {showTeamDropdown && (
+                      <div className={style.teamDropdown}>
+                        {teamMembersAvailable.map((member) => (
+                          <label key={member} className={style.teamOption}>
+                            <input
+                              type="checkbox"
+                              checked={taskData.teamMembers.includes(member)}
+                              onChange={(e) => {
+                                const newMembers = e.target.checked
+                                  ? [...taskData.teamMembers, member]
+                                  : taskData.teamMembers.filter(
+                                      (m) => m !== member
+                                    );
+                                setTaskData({
+                                  ...taskData,
+                                  teamMembers: newMembers,
+                                });
+                              }}
+                            />
+                            <span>{member}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                    {taskData.teamMembers.length > 0 && (
+                      <div className={style.chipsContainer}>
+                        {taskData.teamMembers.map((member, index) => (
+                          <div key={index} className={style.chip}>
+                            {member}
+                            <button
+                              type="button"
+                              className={style.chipRemove}
+                              onClick={() => removeTeamMember(member)}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className={style.formGroup}>
+                  <label htmlFor="task-branch">Ветка Git</label>
+                  <input
+                    id="task-branch"
+                    type="text"
+                    value={taskData.gitBranch}
+                    onChange={(e) =>
+                      setTaskData({ ...taskData, gitBranch: e.target.value })
+                    }
+                    placeholder="Например: feature/new-task"
+                    required
+                  />
+                </div>
+
+                <div className={style.modalButtons}>
+                  <button
+                    type="button"
+                    className={style.cancelButton}
+                    onClick={() => setIsTaskModalOpen(false)}
+                  >
+                    Отмена
+                  </button>
+                  <button type="submit" className={style.submitButton}>
+                    Создать задачу
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Dashboard */}
         <div className={style.dashboardSection}>
