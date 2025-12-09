@@ -44,7 +44,7 @@
 
 .retryBtn {
   padding: 10px 24px;
-  background: rgba($primary-purple, 0.8);
+  background: color-mix(in srgb, $primary-purple, transparent 20%);
   border: none;
   border-radius: $border-radius-md;
   color: $text-main;
@@ -54,7 +54,7 @@
   transition: $transition-smooth;
 
   &:hover {
-    background: rgba($primary-purple, 1);
+    background: $primary-purple;
   }
 }
 
@@ -142,9 +142,9 @@
 
     &:focus {
       outline: none;
-      border-color: rgba($primary-purple, 0.5);
+      border-color: color-mix(in srgb, $primary-purple, transparent 50%);
       background: rgba(102, 126, 234, 0.12);
-      box-shadow: 0 0 0 3px rgba($primary-purple, 0.1);
+      box-shadow: 0 0 0 3px color-mix(in srgb, $primary-purple, transparent 90%);
     }
 
     @media (max-width: 768px) {
@@ -209,8 +209,8 @@
       }
 
       &.active {
-        background: rgba($primary-purple, 0.15);
-        border-color: rgba($primary-purple, 0.3);
+        background: color-mix(in srgb, $primary-purple, transparent 85%);
+        border-color: color-mix(in srgb, $primary-purple, transparent 70%);
         color: $primary-purple;
       }
 
@@ -563,8 +563,8 @@
 
     .projectAction {
       padding: 8px 16px;
-      background: rgba($primary-purple, 0.1);
-      border: 1px solid rgba($primary-purple, 0.3);
+      background: color-mix(in srgb, $primary-purple, transparent 90%);
+      border: 1px solid color-mix(in srgb, $primary-purple, transparent 70%);
       border-radius: $border-radius-md;
       color: $primary-purple;
       font-size: $font-size-sm;
@@ -575,9 +575,9 @@
       white-space: nowrap;
 
       &:hover {
-        background: rgba($primary-purple, 0.2);
-        border-color: rgba($primary-purple, 0.5);
-        color: lighten($primary-purple, 10%);
+        background: color-mix(in srgb, $primary-purple, transparent 80%);
+        border-color: color-mix(in srgb, $primary-purple, transparent 50%);
+        color: color-mix(in srgb, $primary-purple, white 10%);
       }
 
       @media (max-width: 768px) {

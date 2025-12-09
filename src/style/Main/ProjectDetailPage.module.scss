@@ -231,7 +231,7 @@
 .statIcon {
   width: 48px;
   height: 48px;
-  background: rgba($primary-purple, 0.1);
+  background: color-mix(in srgb, $primary-purple, transparent 90%);
   border-radius: $border-radius-md;
   display: flex;
   align-items: center;
@@ -476,7 +476,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: rgba($primary-purple, 0.15);
+  background: color-mix(in srgb, $primary-purple, transparent 85%);
   border-radius: $border-radius-sm;
   color: $primary-purple;
   flex-shrink: 0;
@@ -638,7 +638,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($primary-purple, 0.1);
+  background: color-mix(in srgb, $primary-purple, transparent 90%);
   border-radius: $border-radius-sm;
   flex-shrink: 0;
 
@@ -791,7 +791,7 @@
   font-family: monospace;
   font-weight: 600;
   color: $primary-purple;
-  background: rgba($primary-purple, 0.15);
+  background: color-mix(in srgb, $primary-purple, transparent 85%);
   padding: 2px 6px;
   border-radius: 4px;
   margin-bottom: 6px;
@@ -840,7 +840,7 @@
   gap: 12px;
   padding: 14px 18px;
   background: $bg-card;
-  border: 1px solid rgba($accent-green, 0.3);
+  border: 1px solid color-mix(in srgb, $accent-green, transparent 70%);
   border-radius: $border-radius-lg;
   box-shadow: $shadow-card;
   color: $accent-green;
@@ -1006,7 +1006,7 @@
   font-family: inherit;
 
   &.open {
-    border-color: rgba($primary-purple, 0.5);
+    border-color: color-mix(in srgb, $primary-purple, transparent 50%);
     box-shadow: $state-focus-ring;
   }
 }
@@ -1127,7 +1127,7 @@
 
 .submitButton {
   background: transparent;
-  border-color: rgba($accent-green, 0.3);
+  border-color: color-mix(in srgb, $accent-green, transparent 70%);
   color: $accent-green;
 }
 
@@ -1225,7 +1225,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba($primary-purple, 0.2);
+  background: color-mix(in srgb, $primary-purple, transparent 80%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1253,7 +1253,7 @@
 
   &.online {
     background: $accent-green;
-    box-shadow: 0 0 8px rgba($accent-green, 0.5);
+    box-shadow: 0 0 8px color-mix(in srgb, $accent-green, transparent 50%);
   }
 
   &.away {
@@ -1327,7 +1327,7 @@
 .aiIcon {
   width: 36px;
   height: 36px;
-  background: rgba($primary-purple, 0.1);
+  background: color-mix(in srgb, $primary-purple, transparent 90%);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -1449,8 +1449,8 @@
 }
 
 .chatSendButton {
-  background: rgba($primary-purple, 0.1);
-  border: 1px solid rgba($primary-purple, 0.2);
+  background: color-mix(in srgb, $primary-purple, transparent 90%);
+  border: 1px solid color-mix(in srgb, $primary-purple, transparent 80%);
   border-radius: $border-radius-md;
   padding: 10px 14px;
   cursor: pointer;

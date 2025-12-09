@@ -145,7 +145,7 @@
   }
 
   &.active {
-    background: rgba($primary-color, 0.1);
+    background: color-mix(in srgb, $primary-color, transparent 90%);
     border-left: 3px solid $primary-color;
 
     svg {
@@ -227,7 +227,7 @@
 }
 
 .themeActive {
-  background: rgba($primary-color, 0.12);
+  background: color-mix(in srgb, $primary-color, transparent 88%);
   color: $text-main;
   font-weight: 600;
 }
@@ -311,7 +311,7 @@
   }
 
   &.active {
-    background: rgba($primary-color, 0.1);
+    background: color-mix(in srgb, $primary-color, transparent 90%);
     border-left: 2px solid $primary-color;
 
     .projectTitle {
@@ -412,7 +412,7 @@
     .aiIcon {
       width: 36px;
       height: 36px;
-      background: rgba($primary-color, 0.1);
+      background: color-mix(in srgb, $primary-color, transparent 90%);
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -542,8 +542,8 @@
   }
 
   .chatSendButton {
-    background: rgba($primary-color, 0.1);
-    border: 1px solid rgba($primary-color, 0.2);
+    background: color-mix(in srgb, $primary-color, transparent 90%);
+    border: 1px solid color-mix(in srgb, $primary-color, transparent 80%);
     border-radius: $border-radius-lg;
     padding: 10px 14px;
     cursor: pointer;
@@ -553,7 +553,7 @@
     transition: background-color 0.2s ease;
 
     &:hover:not(:disabled) {
-      background: rgba($primary-color, 0.2);
+      background: color-mix(in srgb, $primary-color, transparent 80%);
     }
 
     &:disabled {
@@ -708,7 +708,7 @@
       transition: background-color 0.2s ease;
 
       &:hover {
-        background: rgba($primary-color, 0.1);
+        background: color-mix(in srgb, $primary-color, transparent 90%);
       }
 
       svg {
@@ -797,8 +797,8 @@
   }
 
   .submitButton {
-    background: rgba($primary-color, 0.1);
-    border: 1px solid rgba($primary-color, 0.2);
+    background: color-mix(in srgb, $primary-color, transparent 90%);
+    border: 1px solid color-mix(in srgb, $primary-color, transparent 80%);
     color: $primary-color;
     display: flex;
     align-items: center;
@@ -806,7 +806,7 @@
     gap: 8px;
 
     &:hover:not(:disabled) {
-      background: rgba($primary-color, 0.2);
+      background: color-mix(in srgb, $primary-color, transparent 80%);
     }
 
     &:disabled {

@@ -126,7 +126,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba($accent-blue, 0.2);
+  background: color-mix(in srgb, $accent-blue, transparent 80%);
   color: $accent-blue;
   display: flex;
   align-items: center;
@@ -201,7 +201,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba($accent-blue, 0.2);
+  background: color-mix(in srgb, $accent-blue, transparent 80%);
   color: $accent-blue;
   display: flex;
   align-items: center;
@@ -282,8 +282,8 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: rgba($accent-blue, 0.1);
-  border: 1px solid rgba($accent-blue, 0.3);
+  background: color-mix(in srgb, $accent-blue, transparent 90%);
+  border: 1px solid color-mix(in srgb, $accent-blue, transparent 70%);
   border-radius: $border-radius-md;
   color: $accent-blue;
   cursor: pointer;
@@ -296,12 +296,11 @@
   }
 
   &:hover {
-    background: rgba($accent-blue, 0.2);
-    border-color: rgba($accent-blue, 0.5);
+    background: color-mix(in srgb, $accent-blue, transparent 80%);
+    border-color: color-mix(in srgb, $accent-blue, transparent 50%);
   }
 
   &:active {
     transform: scale(0.95);
   }
 }
-

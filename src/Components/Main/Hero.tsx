@@ -43,7 +43,10 @@ interface User {
   online?: boolean;
 }
 
-const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => {
+const Hero: React.FC<HeroProps> = ({
+  onNavigateToProjects,
+  onProjectClick,
+}) => {
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<{
@@ -241,10 +244,16 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
   );
 
   const renderProjectCard = (project: Project) => {
-
     // Генерируем название репозитория на основе названия проекта
-    const repositoryName = project.repository || `github.com/org/${project.tittle.toLowerCase().replace(/\s+/g, '-')}`;
-    const activeTasksCount = project.activeTasks !== undefined ? project.activeTasks : (project.tasks ? Math.floor((project.tasks * 0.6)) : 0);
+    const repositoryName =
+      project.repository ||
+      `github.com/org/${project.tittle.toLowerCase().replace(/\s+/g, "-")}`;
+    const activeTasksCount =
+      project.activeTasks !== undefined
+        ? project.activeTasks
+        : project.tasks
+        ? Math.floor(project.tasks * 0.6)
+        : 0;
 
     return (
       <div
@@ -276,7 +285,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
           {/* Название репозитория */}
           <div className={style.infoRow}>
             <div className={style.infoIcon}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
               </svg>
             </div>
@@ -289,7 +305,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
           {/* Количество людей */}
           <div className={style.infoRow}>
             <div className={style.infoIcon}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
@@ -297,14 +320,23 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
             </div>
             <div className={style.infoContent}>
               <span className={style.infoLabel}>Участников</span>
-              <span className={style.infoValue}>{project.users?.length || project.members || 0}</span>
+              <span className={style.infoValue}>
+                {project.users?.length || project.members || 0}
+              </span>
             </div>
           </div>
 
           {/* Количество активных задач */}
           <div className={style.infoRow}>
             <div className={style.infoIcon}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M9 11l3 3L22 4" />
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg>
@@ -319,7 +351,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
           {project.progress !== undefined && (
             <div className={style.infoRow}>
               <div className={style.infoIcon}>
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.66667">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.66667"
+                >
                   <path d="M13.3334 5.83325H18.3334V10.8333" />
                   <path d="M18.3333 5.83325L11.25 12.9166L7.08329 8.74992L1.66663 14.1666" />
                 </svg>
@@ -334,7 +373,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
           {project.updated_at && (
             <div className={style.infoRow}>
               <div className={style.infoIcon}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 6v6l4 2" />
                 </svg>
@@ -879,7 +925,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => 
                 </div>
               )}
             </div>
-
           </div>
 
           {/* Группа: Дедлайны и быстрый доступ */}

@@ -446,12 +446,12 @@
   transition: $transition-default;
   font-family: inherit;
   background: transparent;
-  border: 1px solid rgba($accent-green, 0.3);
+  border: 1px solid color-mix(in srgb, $accent-green, transparent 70%);
   color: $accent-green;
 
   &:hover {
-    background: rgba($accent-green, 0.1);
-    border-color: rgba($accent-green, 0.5);
+    background: color-mix(in srgb, $accent-green, transparent 90%);
+    border-color: color-mix(in srgb, $accent-green, transparent 50%);
   }
 }
 

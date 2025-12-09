@@ -253,8 +253,8 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: rgba($primary-purple, 0.1);
-  border: 1px solid rgba($primary-purple, 0.2);
+  background: color-mix(in srgb, $primary-purple, transparent 90%);
+  border: 1px solid color-mix(in srgb, $primary-purple, transparent 80%);
   border-radius: $border-radius-lg;
   color: $primary-purple;
   cursor: pointer;

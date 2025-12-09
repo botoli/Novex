@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import "../../App.scss";
 import { selectUser } from "../../store/user.js";
 import { ProjectService, formatDate } from "../../assets/MockData/index.js";
+import { themes as themesMap, themeNames } from "../../assets/LeftPanel/themes";
 
 interface Project {
   id: number;
@@ -52,33 +53,8 @@ function LeftPanel({
   const [isProjectsListCollapsed, setIsProjectsListCollapsed] = useState(false);
   const [isAIPanelCollapsed, setIsAIPanelCollapsed] = useState(true); // По умолчанию свернуто
 
-  // Список доступных тем
-  const themes = [
-    "dark-plus",
-    "light-plus",
-    "monokai",
-    "solarized-dark",
-    "dracula",
-    "github-dark",
-    "github-light",
-    "one-dark-pro",
-    "material-theme-darker",
-    "night-owl",
-    "palenight",
-    "synthwave-84",
-    "tokyo-night",
-    "catppuccin-mocha",
-    "ayu-dark",
-    "cobalt2",
-    "gruvbox-dark",
-    "horizon",
-    "nord",
-    "red",
-    "abyss",
-    "quietlight",
-    "kimbie-dark",
-    "solarized-light",
-  ];
+  // Список доступных тем (берём из src/assets/LeftPanel/themes.ts)
+  const themes = [...themeNames];
 
   // Выбранная тема (инициализация из localStorage)
   const [selectedTheme, setSelectedTheme] = useState<string>(() => {
@@ -238,29 +214,55 @@ function LeftPanel({
   };
 
   const toggleTheme = () => {
-    // Теперь открываем/закрываем меню выбора темы
     setIsThemeMenuOpen((s) => !s);
   };
 
+  const handleThemeChange = (theme: string) => {
+    setSelectedTheme(theme);
+    setIsThemeMenuOpen(false);
+  };
+
   useEffect(() => {
-    // Применяем выбранную тему к body через data-theme и сохраняем в localStorage
     try {
+      // Удаляем существующие theme-* классы
+      Array.from(document.body.classList)
+        .filter(
+          (c): c is string => typeof c === "string" && c.startsWith("theme-")
+        )
+        .forEach((c) => document.body.classList.remove(c));
+
       if (selectedTheme) {
+        // Добавляем класс вида theme-<name> — классы и переменные определены в src/style/Main/_variables.module.scss
+        document.body.classList.add(`theme-${selectedTheme}`);
+
+        // Сохраняем и дублируем в data-theme для совместимости
         document.body.setAttribute("data-theme", selectedTheme);
         localStorage.setItem("theme", selectedTheme);
+
+        // Отладочный лог
+        // eslint-disable-next-line no-console
+        console.log("[Theme] applied", selectedTheme);
       } else {
+        // Убираем data-theme
         document.body.removeAttribute("data-theme");
         localStorage.removeItem("theme");
+
+        // Отладочный лог
+        // eslint-disable-next-line no-console
+        console.log("[Theme] cleared");
       }
     } catch (e) {
-      // ignore localStorage errors
+      // eslint-disable-next-line no-console
+      console.error("[Theme] apply error", e);
     }
 
     // Синхронизируем старое булево состояние dark, если где-то используется
     setIsDarkMode(!!selectedTheme && selectedTheme.includes("dark"));
   }, [selectedTheme]);
 
-  // Закрытие меню при клике вне области и при нажатии Esc
+  const [, updateState] = React.useState<any>();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
+
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (
@@ -498,8 +500,7 @@ function LeftPanel({
                             }`}
                             onClick={(ev) => {
                               ev.stopPropagation();
-                              setSelectedTheme(t);
-                              setIsThemeMenuOpen(false);
+                              handleThemeChange(t);
                             }}
                           >
                             {t}
