@@ -88,7 +88,7 @@ class ApiService {
     description: string;
     owner_id: number;
   }) {
-    return this.request<Project>("/createProj", {
+    return this.request<Project>("/projects/create", {
       method: "POST",
       body: JSON.stringify(projectData),
     });

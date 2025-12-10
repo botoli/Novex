@@ -145,7 +145,7 @@ export const ProjectService = {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/createProj`, {
+      const response = await fetch(`${API_BASE_URL}/projects/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
