@@ -1,5 +1,5 @@
 // LeftPanel.module.scss
-@import "./variables.module";
+@use "./variables.module" as *;
 
 .main {
   background-color: $bg-sidebar;

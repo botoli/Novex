@@ -32,9 +32,9 @@ class ProjectController
             DB::beginTransaction();
 
             $project = Project::create([
-                'tittle' => $request->tittle,
+                'title' => $request->tittle,
                 'description' => $request->description,
-                'owner_id' => $request->owner_id,
+                'user_id' => $request->owner_id,
             ]);
 
             ProjectUser::create([
@@ -108,7 +108,7 @@ class ProjectController
 
             $project = Project::findOrFail($request->project_id);
 
-            if ($project->owner_id != $request->user_id) {
+            if ($project->user_id != $request->user_id) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -200,14 +200,21 @@ class ProjectController
                 ], 404);
             }
 
-            if ($project->owner_id != $request->input('user_id')) {
+            if ($project->user_id != $request->input('user_id')) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Только владелец может обновить проект'
                 ], 403);
             }
 
-            $project->update($request->only(['tittle', 'description']));
+            $data = [];
+            if ($request->has('tittle')) {
+                $data['title'] = $request->tittle;
+            }
+            if ($request->has('description')) {
+                $data['description'] = $request->description;
+            }
+            $project->update($data);
 
             DB::commit();
 
@@ -529,9 +536,9 @@ class ProjectController
                 'task_statistics' => $taskStats,
                 'member_statistics' => $memberStats,
                 'project' => [
-                    'title' => $project->tittle,
+                    'title' => $project->title,
                     'created_at' => $project->created_at,
-                    'owner' => User::find($project->owner_id)->name ?? 'Неизвестно'
+                    'owner' => User::find($project->user_id)->name ?? 'Неизвестно'
                 ]
             ]);
 

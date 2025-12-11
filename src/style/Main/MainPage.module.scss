@@ -1,5 +1,5 @@
 // MainPage.module.scss
-@import "./variables.module";
+@use "./variables.module" as *;
 
 .mainContainer {
   display: flex;

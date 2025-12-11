@@ -10,21 +10,28 @@ import {
   formatDate,
   getStatusColor,
   getStatusText,
+  getPriorityColor,
+  formatDeadlineDate,
 } from "../../assets/MockData/index.js";
 import Dashboard from "./Dashboard";
 import style from "../../style/Main/ProjectDetailPage.module.scss";
 
 interface Project {
   id: number;
-  tittle: string;
+  title: string;
   description: string;
   owner_id: number;
+  owner_name?: string;
   created_at: string;
   updated_at: string;
+  deadline?: string;
   progress?: number;
   members?: number;
   tasks?: number;
   status?: string;
+  priority?: "low" | "medium" | "high";
+  tags?: string[];
+  budget?: number;
 }
 
 interface TaskData {
@@ -332,7 +339,7 @@ function ProjectDetailPage({
                 </button>
               )}
               <div className={style.titleGroup}>
-                <h1 className={style.projectTitle}>{project.tittle}</h1>
+                <h1 className={style.projectTitle}>{project.title}</h1>
                 <span
                   className={style.statusBadge}
                   style={{
@@ -379,6 +386,59 @@ function ProjectDetailPage({
                       <circle cx="12" cy="10" r="3" />
                     </svg>
                     <span>Обновлен {formatDate(project.updated_at)}</span>
+                  </div>
+                )}
+                {project.deadline && (
+                  <div className={style.metaItem}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Дедлайн: {formatDeadlineDate(project.deadline)}</span>
+                  </div>
+                )}
+                {project.owner_name && (
+                  <div className={style.metaItem}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span>Владелец: {project.owner_name}</span>
+                  </div>
+                )}
+                {project.priority && (
+                  <div className={style.metaItem}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <span style={{ color: getPriorityColor(project.priority) }}>
+                      Приоритет:{" "}
+                      {project.priority === "high"
+                        ? "Высокий"
+                        : project.priority === "medium"
+                        ? "Средний"
+                        : "Низкий"}
+                    </span>
                   </div>
                 )}
               </div>
@@ -446,6 +506,17 @@ function ProjectDetailPage({
           {project.description && (
             <div className={style.projectDescription}>
               <p>{project.description}</p>
+            </div>
+          )}
+
+          {/* Теги и дополнительные метки */}
+          {project.tags && project.tags.length > 0 && (
+            <div className={style.tagsContainer}>
+              {project.tags.map((tag, index) => (
+                <span key={index} className={style.tag}>
+                  {tag}
+                </span>
+              ))}
             </div>
           )}
 
@@ -517,6 +588,32 @@ function ProjectDetailPage({
                 <div className={style.statContent}>
                   <div className={style.statValue}>{project.members}</div>
                   <div className={style.statLabel}>Участников</div>
+                </div>
+              </div>
+            )}
+            {project.budget !== undefined && (
+              <div className={style.statCard}>
+                <div className={style.statIcon}>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.66667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M10 5.83325V14.1666" />
+                    <path d="M13.3333 8.33325H8.33329C7.41282 8.33325 6.66663 9.07944 6.66663 9.99992C6.66663 10.9204 7.41282 11.6666 8.33329 11.6666H11.6666C12.5871 11.6666 13.3333 12.4128 13.3333 13.3333C13.3333 14.2537 12.5871 14.9999 11.6666 14.9999H6.66663" />
+                    <path d="M17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5C14.1421 2.5 17.5 5.85786 17.5 10Z" />
+                  </svg>
+                </div>
+                <div className={style.statContent}>
+                  <div className={style.statValue}>
+                    {project.budget.toLocaleString()} ₽
+                  </div>
+                  <div className={style.statLabel}>Бюджет</div>
                 </div>
               </div>
             )}
@@ -616,7 +713,10 @@ function ProjectDetailPage({
                   {taskData.files.length > 0 && (
                     <div className={style.fileList}>
                       {taskData.files.map((file, index) => (
-                        <div key={`${file.name}-${index}`} className={style.fileItem}>
+                        <div
+                          key={`${file.name}-${index}`}
+                          className={style.fileItem}
+                        >
                           <div className={style.fileInfo}>
                             <div className={style.fileName}>{file.name}</div>
                             <div className={style.fileSize}>

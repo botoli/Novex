@@ -12,17 +12,17 @@ class AuthController
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => '',
-            'email' => '',
-            'password' => '',
-            'status'=>'',
+           'name' => 'required|string|max:255',
+           'email' => 'required|email|unique:users',
+           'password' => 'required|min:6',
+           'status' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors()->all(),
             ], 422);
         }
 
@@ -47,7 +47,8 @@ class AuthController
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Server error: ' . $e->getMessage()
+                'message' => 'Server error: ' . $e->getMessage(),
+                'errors' => ['server_error' => $e->getMessage()],
             ], 500);
         }
     }
@@ -228,4 +229,3 @@ class AuthController
         }
     }
 }
-i

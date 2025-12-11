@@ -1,4 +1,4 @@
-@import "./variables.module";
+@use "./variables.module" as *;
 
 // Дополнительные переменные для карточек настроек
 $bg-card-hover: color-mix(in srgb, $bg-card, $primary-color 5%);
@@ -128,4 +128,3 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
   padding-top: 12px;
   border-top: 1px solid $border-light;
 }
-

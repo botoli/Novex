@@ -9,7 +9,7 @@ interface ApiResponse<T = any> {
 
 interface Project {
   id: number;
-  tittle: string;
+  title: string;
   description: string;
   owner_id: number;
   created_at: string;
@@ -33,6 +33,22 @@ interface User {
   online?: boolean;
 }
 
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  status: string;
+  priority: string;
+  due_date?: string;
+  project_id?: number;
+  created_by: number;
+  assigned_to?: number;
+  completed_at?: string;
+  tags?: string[];
+  assignee?: User;
+  creator?: User;
+}
+
 class ApiService {
   private async request<T>(
     endpoint: string,
@@ -49,8 +65,14 @@ class ApiService {
     const response = await fetch(url, { ...defaultOptions, ...options });
     const data: ApiResponse<T> = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Ошибка запроса");
+    if (!response.ok) {
+      throw new Error(
+        `Server error ${response.status}: ${data.message || "Unknown error"}`
+      );
+    }
+
+    if (!data.success) {
+      throw new Error(data.message || "Request error");
     }
 
     return data.data as T;
@@ -63,20 +85,20 @@ class ApiService {
     password: string;
     status: string;
   }) {
-    return this.request("/create", {
+    return this.request("/users/register", {
       method: "POST",
       body: JSON.stringify(userData),
     });
   }
 
   async checkUser(email: string, name: string) {
-    return this.request(`/check-user?email=${email}&name=${name}`, {
+    return this.request(`/users/check-user?email=${email}&name=${name}`, {
       method: "GET",
     });
   }
 
   async login(credentials: { email: string; password: string }) {
-    return this.request("/login", {
+    return this.request("/users/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
@@ -100,20 +122,79 @@ class ApiService {
     });
   }
 
-  async getAllProjects() {
-    // Note: This endpoint might not exist yet, we'll need to create it
-    return this.request<Project[]>("/projects/all", {
+  async getProjectById(projectId: number) {
+    return this.request<Project>(`/projects/${projectId}`, {
       method: "GET",
     });
   }
 
-  async getProjectById(projectId: number) {
-    // Note: This endpoint might not exist yet, we'll need to create it
-    return this.request<Project>(`/projects/${projectId}`, {
+  // Task methods
+  async getTasks(params?: {
+    project_id?: number;
+    status?: string;
+    assigned_to?: number;
+    priority?: string;
+    sort_by?: string;
+    sort_order?: string;
+    per_page?: number;
+  }) {
+    const query = new URLSearchParams();
+    if (params?.project_id) query.append('project_id', params.project_id.toString());
+    if (params?.status) query.append('status', params.status);
+    if (params?.assigned_to) query.append('assigned_to', params.assigned_to.toString());
+    if (params?.priority) query.append('priority', params.priority);
+    if (params?.sort_by) query.append('sort_by', params.sort_by);
+    if (params?.sort_order) query.append('sort_order', params.sort_order);
+    if (params?.per_page) query.append('per_page', params.per_page.toString());
+    const queryString = query.toString();
+    const endpoint = `/tasks${queryString ? `?${queryString}` : ''}`;
+    return this.request<Task[]>(endpoint, {
       method: "GET",
+    });
+  }
+
+  async getTaskById(id: number) {
+    return this.request<Task>(`/tasks/${id}`, {
+      method: "GET",
+    });
+  }
+
+  async createTask(taskData: {
+    title: string;
+    description?: string;
+    status: string;
+    priority: string;
+    due_date?: string;
+    project_id?: number;
+    assigned_to?: number;
+    tags?: string[];
+    created_by: number;
+  }) {
+    return this.request<Task>('/tasks', {
+      method: "POST",
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async updateTask(id: number, taskData: Partial<Task>) {
+    return this.request<Task>(`/tasks/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async deleteTask(id: number) {
+    return this.request(`/tasks/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async completeTask(id: number) {
+    return this.request<Task>(`/tasks/${id}/complete`, {
+      method: "POST",
     });
   }
 }
 
 export const apiService = new ApiService();
-export type { Project, User };
+export type { Project, User, Task };

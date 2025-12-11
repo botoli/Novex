@@ -1,5 +1,5 @@
 // Dashboard.module.scss
-@import "./variables.module";
+@use "./variables.module" as *;
 
 /* ========== ОСНОВНЫЕ ИСПРАВЛЕНИЯ ШИРИНЫ ========== */
 

@@ -9,7 +9,7 @@ import { themes as themesMap, themeNames } from "../../assets/LeftPanel/themes";
 
 interface Project {
   id: number;
-  tittle: string;
+  title: string;
   description: string;
   owner_id: number;
   created_at: string;
@@ -453,7 +453,7 @@ function LeftPanel({
                                 </div>
                                 <div className={style.projectInfo}>
                                   <div className={style.projectTitle}>
-                                    {project.tittle}
+                                    {project.title}
                                   </div>
                                   <div className={style.projectDate}>
                                     {formatDate(project.created_at)}
@@ -768,7 +768,7 @@ function LeftPanel({
                       >
                         <div className={style.projectItemHeader}>
                           <div className={style.projectItemTitle}>
-                            {project.tittle}
+                            {project.title}
                           </div>
                           <div className={style.projectItemDate}>
                             {formatDate(project.created_at)}

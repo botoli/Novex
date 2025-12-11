@@ -1,4 +1,4 @@
-@import "./variables.module";
+@use "./variables.module";
 
 .activityLog {
   background: $bg-card;
@@ -148,6 +148,3 @@
   display: inline-block;
   margin-top: 4px;
 }
-
-
-

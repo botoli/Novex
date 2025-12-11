@@ -83,7 +83,7 @@ export const HeroDataService = {
       // Преобразуем в формат для Hero компонента
       return projects.map((project) => ({
         id: project.id,
-        name: project.tittle,
+        name: project.title,
         status: project.status || "active",
         statusText: getStatusText(project.status),
         progress: project.progress || 0,

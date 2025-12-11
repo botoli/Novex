@@ -42,7 +42,7 @@ const TasksPage: React.FC = () => {
         const projects = await ProjectService.getUserProjects(user.id);
         const generated: TaskCard[] = projects.flatMap((project, idx) => {
           const baseId = `${project.id}-${idx}`;
-          const baseTitle = project.tittle || "Проект";
+          const baseTitle = project.title || "Проект";
           const desc =
             project.description ||
             "Описание будет добавлено, когда владелец уточнит детали.";

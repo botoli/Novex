@@ -11,7 +11,7 @@ import {
 
 interface Project {
   id: number;
-  tittle: string;
+  title: string;
   description: string;
   owner_id: number;
   created_at: string;
@@ -20,6 +20,10 @@ interface Project {
   members?: number;
   tasks?: number;
   status?: string;
+  priority?: string;
+  tags?: string[];
+  deadline?: string;
+  owner_name?: string;
 }
 
 // Доступные статусы для фильтрации
@@ -30,6 +34,19 @@ const STATUS_FILTERS = [
   { id: "pending", label: "В ожидании" },
   { id: "archived", label: "Архивные" },
 ];
+
+// Приоритеты проектов
+const PRIORITY_COLORS: Record<string, string> = {
+  high: "#FF6467",
+  medium: "#FDC700",
+  low: "#667EEA",
+};
+
+const PRIORITY_LABELS: Record<string, string> = {
+  high: "Высокий",
+  medium: "Средний",
+  low: "Низкий",
+};
 
 interface ProjectsPageProps {
   onProjectClick?: (projectId: number) => void;
@@ -76,7 +93,7 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (project) =>
-          project.tittle.toLowerCase().includes(query) ||
+          project.title.toLowerCase().includes(query) ||
           project.description?.toLowerCase().includes(query) ||
           project.status?.toLowerCase().includes(query)
       );
@@ -114,6 +131,35 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
   const getStatusBadgeColor = (status?: string) => {
     if (!status) return "#666"; // Fallback цвет
     return getStatusColor(status);
+  };
+
+  const getPriorityBadge = (priority?: string) => {
+    if (!priority) return null;
+    const color = PRIORITY_COLORS[priority] || "#667EEA";
+    const label = PRIORITY_LABELS[priority] || priority;
+    return { color, label };
+  };
+
+  const formatDeadline = (deadline?: string) => {
+    if (!deadline) return null;
+    const date = new Date(deadline);
+    const today = new Date();
+    const diffDays = Math.ceil(
+      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diffDays < 0) return { text: "Просрочено", color: "#FF6467" };
+    if (diffDays === 0) return { text: "Сегодня", color: "#FDC700" };
+    if (diffDays === 1) return { text: "Завтра", color: "#FDC700" };
+    if (diffDays <= 7)
+      return { text: `Через ${diffDays} дн.`, color: "#667EEA" };
+    return {
+      text: date.toLocaleDateString("ru-RU", {
+        day: "numeric",
+        month: "short",
+      }),
+      color: "#888",
+    };
   };
 
   return (
@@ -185,13 +231,99 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
               </div>
             </div>
 
-            {/* Заголовок */}
+            {/* Заголовок и статистика */}
             <div className={style.projectsHeader}>
-              <h1 className={style.title}>Проекты</h1>
+              <div className={style.headerTop}>
+                <h1 className={style.title}>Проекты</h1>
+                <div className={style.headerActions}>
+                  <button className={style.newProjectBtn}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 5v14M5 12h14"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    Новый проект
+                  </button>
+                  <button className={style.viewToggle}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <rect
+                        x="3"
+                        y="3"
+                        width="7"
+                        height="7"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <rect
+                        x="14"
+                        y="3"
+                        width="7"
+                        height="7"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <rect
+                        x="3"
+                        y="14"
+                        width="7"
+                        height="7"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <rect
+                        x="14"
+                        y="14"
+                        width="7"
+                        height="7"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className={style.headerStats}>
+                <div className={style.statCard}>
+                  <span className={style.statLabel}>Всего проектов</span>
+                  <span className={style.statValue}>{projects.length}</span>
+                </div>
+                <div className={style.statCard}>
+                  <span className={style.statLabel}>Активные</span>
+                  <span className={style.statValue}>
+                    {projects.filter((p) => p.status === "active").length}
+                  </span>
+                </div>
+                <div className={style.statCard}>
+                  <span className={style.statLabel}>Завершено</span>
+                  <span className={style.statValue}>
+                    {projects.filter((p) => p.status === "completed").length}
+                  </span>
+                </div>
+                <div className={style.statCard}>
+                  <span className={style.statLabel}>Прогресс</span>
+                  <span className={style.statValue}>
+                    {projects.length > 0
+                      ? `${Math.round(
+                          projects.reduce(
+                            (acc, p) => acc + (p.progress || 0),
+                            0
+                          ) / projects.length
+                        )}%`
+                      : "0%"}
+                  </span>
+                </div>
+              </div>
               <p className={style.subtitle}>
                 {searchQuery || activeFilter !== "all"
                   ? `Найдено проектов: ${filteredProjects.length}`
-                  : `Все ваши проекты: ${projects.length}`}
+                  : `Управляйте всеми вашими проектами в одном месте`}
               </p>
             </div>
 
@@ -232,18 +364,62 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
                   >
                     <div className={style.cardHeader}>
                       <div className={style.projectInfo}>
-                        <h3 className={style.projectTitle}>{project.tittle}</h3>
-                        <span
-                          className={style.statusBadge}
-                          style={{
-                            backgroundColor: `${getStatusColor(
-                              project.status
-                            )}20`,
-                            color: getStatusColor(project.status),
-                          }}
-                        >
-                          {getStatusText(project.status)}
-                        </span>
+                        <div className={style.titleRow}>
+                          <h3 className={style.projectTitle}>
+                            {project.title}
+                          </h3>
+                          <div className={style.badgeContainer}>
+                            <span
+                              className={style.statusBadge}
+                              style={{
+                                backgroundColor: `${getStatusColor(
+                                  project.status
+                                )}20`,
+                                color: getStatusColor(project.status),
+                              }}
+                            >
+                              {getStatusText(project.status)}
+                            </span>
+                            {project.priority && (
+                              <span
+                                className={style.priorityBadge}
+                                style={{
+                                  backgroundColor: `${
+                                    PRIORITY_COLORS[project.priority]
+                                  }20`,
+                                  color: PRIORITY_COLORS[project.priority],
+                                }}
+                              >
+                                {PRIORITY_LABELS[project.priority] ||
+                                  project.priority}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {project.owner_name && (
+                          <div className={style.ownerInfo}>
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                              <circle
+                                cx="12"
+                                cy="7"
+                                r="4"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                            </svg>
+                            <span>{project.owner_name}</span>
+                          </div>
+                        )}
                       </div>
                       <div className={style.projectStats}>
                         {project.members !== undefined && (
@@ -310,78 +486,113 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
                       <p>{project.description || "Описание отсутствует"}</p>
                     </div>
 
-                    {project.progress !== undefined && (
-                      <div className={style.progressSection}>
-                        <div className={style.progressHeader}>
-                          <span>Прогресс</span>
-                          <span>{project.progress}%</span>
-                        </div>
-                        <div className={style.progressBar}>
-                          <div
-                            className={style.progressFill}
-                            style={{ width: `${project.progress}%` }}
-                          ></div>
-                        </div>
+                    <div className={style.projectMetrics}>
+                      <div className={style.metric}>
+                        <span className={style.metricLabel}>Участники</span>
+                        <span className={style.metricValue}>
+                          {project.members !== undefined
+                            ? project.members
+                            : "0"}
+                        </span>
+                      </div>
+                      <div className={style.metric}>
+                        <span className={style.metricLabel}>Задачи</span>
+                        <span className={style.metricValue}>
+                          {project.tasks !== undefined ? project.tasks : "0"}
+                        </span>
+                      </div>
+                      <div className={style.metric}>
+                        <span className={style.metricLabel}>Обновлен</span>
+                        <span className={style.metricValue}>
+                          {formatDate(project.updated_at)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {project.tags && project.tags.length > 0 && (
+                      <div className={style.tagsContainer}>
+                        {project.tags.slice(0, 3).map((tag, idx) => (
+                          <span key={idx} className={style.tag}>
+                            {tag}
+                          </span>
+                        ))}
+                        {project.tags.length > 3 && (
+                          <span className={style.moreTags}>
+                            +{project.tags.length - 3}
+                          </span>
+                        )}
                       </div>
                     )}
 
-                    <div className={style.cardFooter}>
-                      <div className={style.dateInfo}>
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
+                    <div className={style.bottomSection}>
+                      {project.progress !== undefined && (
+                        <div className={style.progressSection}>
+                          <div className={style.progressHeader}>
+                            <span>Прогресс</span>
+                            <span>{project.progress}%</span>
+                          </div>
+                          <div className={style.progressBar}>
+                            <div
+                              className={style.progressFill}
+                              style={{ width: `${project.progress}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={style.actionButtons}>
+                        <button className={style.quickAction}>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            />
+                            <circle
+                              cx="9"
+                              cy="7"
+                              r="4"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                          Участники
+                        </button>
+                        <button className={style.quickAction}>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M22 11.08V12a10 10 0 11-5.93-9.14"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            />
+                            <path
+                              d="M22 4L12 14.01l-3-3"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                          Задачи
+                        </button>
+                        <button
+                          className={style.projectAction}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleProjectClick(project.id);
+                          }}
                         >
-                          <rect
-                            x="3"
-                            y="4"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            ry="2"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          />
-                          <line
-                            x1="16"
-                            y1="2"
-                            x2="16"
-                            y2="6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                          <line
-                            x1="8"
-                            y1="2"
-                            x2="8"
-                            y2="6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                          <line
-                            x1="3"
-                            y1="10"
-                            x2="21"
-                            y2="10"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <span>Создан {formatDate(project.created_at)}</span>
+                          Открыть →
+                        </button>
                       </div>
-                      <button
-                        className={style.projectAction}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleProjectClick(project.id);
-                        }}
-                      >
-                        Открыть →
-                      </button>
                     </div>
                   </div>
                 ))}

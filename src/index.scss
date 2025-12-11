@@ -1,4 +1,4 @@
-@import "./style/Font.scss";
+@use "./style/Font.scss" as *;
 
 * {
   font-family: var(--font-primary);

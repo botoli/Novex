@@ -1,4 +1,4 @@
-@import "./variables.module";
+@use "./variables.module" as *;
 
 .projectDetailPage {
   background-color: $bg-content;
@@ -278,6 +278,26 @@
   }
 }
 
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: color-mix(in srgb, $primary-purple, transparent 85%);
+  border: 1px solid color-mix(in srgb, $primary-purple, transparent 50%);
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  color: $primary-purple;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .projectStats {
   display: flex;
   gap: 20px;
@@ -339,6 +359,43 @@
   font-size: $font-size-sm;
   color: $text-secondary;
   font-weight: 500;
+}
+
+.priorityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.budgetCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  flex: 1;
+  min-width: 200px;
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+    flex: none;
+  }
+
+  .statIcon {
+    background: color-mix(in srgb, $accent-green, transparent 90%);
+    color: $accent-green;
+  }
+
+  .statValue {
+    color: $accent-green;
+  }
 }
 
 /* --- Кнопки действий --- */

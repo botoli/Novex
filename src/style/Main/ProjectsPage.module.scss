@@ -1,6 +1,8 @@
 // ProjectsPage.module.scss
-@import "./variables.module";
-
+@use "./variables.module" as *;
+$bg-card-hover: color-mix(in srgb, $bg-card, $primary-color 5%);
+$border-hover: color-mix(in srgb, $border-light, $primary-color 20%);
+$shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
 .projectsPage {
   background-color: $bg-content;
   color: $text-main;
@@ -235,23 +237,126 @@
     margin-bottom: 24px;
   }
 
-  .title {
-    margin: 0;
-    font-size: $font-size-4xl;
-    line-height: 1.2;
-    font-weight: 600;
-    color: $text-main;
-
-    @media (max-width: 1200px) {
-      font-size: $font-size-3xl;
-    }
+  .headerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
 
     @media (max-width: 768px) {
-      font-size: 28px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: $font-size-4xl;
+      line-height: 1.2;
+      font-weight: 600;
+      color: $text-main;
+
+      @media (max-width: 1200px) {
+        font-size: $font-size-3xl;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 28px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 24px;
+      }
+    }
+
+    .headerActions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      .newProjectBtn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: $primary-purple;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        border-radius: $border-radius-md;
+        color: white;
+        font-size: $font-size-sm;
+        font-weight: 500;
+        cursor: pointer;
+        transition: $transition-default;
+
+        &:hover {
+          background: color-mix(in srgb, $primary-purple, white 10%);
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .viewToggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: $border-radius-md;
+        color: $text-secondary;
+        cursor: pointer;
+        transition: $transition-default;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  .headerStats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     @media (max-width: 480px) {
-      font-size: 24px;
+      grid-template-columns: 1fr;
+    }
+
+    .statCard {
+      background: rgba(102, 126, 234, 0.08);
+      border: 1px solid rgba(102, 126, 234, 0.15);
+      border-radius: $border-radius-lg;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .statLabel {
+        font-size: $font-size-sm;
+        color: $text-secondary;
+      }
+
+      .statValue {
+        font-size: $font-size-2xl;
+        font-weight: 700;
+        color: $text-main;
+      }
     }
   }
 
@@ -280,10 +385,15 @@
 /* --- Сетка проектов --- */
 .projectsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 28px;
   width: 100%;
   box-sizing: border-box;
+
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+  }
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -329,7 +439,8 @@
   overflow: hidden;
 
   &:hover {
-    background: rgba(30, 30, 30, 0.95);
+    background-color: $bg-card-hover;
+    border-color: $border-hover;
   }
 
   @media (max-width: 1200px) {
@@ -354,58 +465,108 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
+    gap: 16px;
     width: 100%;
+
+    @media (max-width: 768px) {
+      gap: 12px;
+    }
 
     @media (max-width: 480px) {
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .projectInfo {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       flex: 1;
       min-width: 0;
       width: 100%;
 
-      .projectTitle {
-        margin: 0;
-        font-size: $font-size-xl;
-        font-weight: 600;
-        color: $text-main;
-        line-height: 1.3;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        min-height: 2.6em;
+      .titleRow {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
 
-        @media (max-width: 1200px) {
-          font-size: $font-size-lg;
+        .projectTitle {
+          margin: 0;
+          font-size: $font-size-xl;
+          font-weight: 600;
+          color: $text-main;
+          line-height: 1.3;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          min-height: 2.6em;
+
+          @media (max-width: 1200px) {
+            font-size: $font-size-lg;
+          }
+
+          @media (max-width: 768px) {
+            font-size: $font-size-md;
+            min-height: 2.4em;
+            -webkit-line-clamp: 2;
+          }
         }
 
-        @media (max-width: 768px) {
-          font-size: $font-size-md;
-          min-height: 2.4em;
-          -webkit-line-clamp: 2;
+        .badgeContainer {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          align-items: center;
+
+          .statusBadge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: $font-size-xs;
+            font-weight: 500;
+            white-space: nowrap;
+            display: inline-block;
+
+            @media (max-width: 768px) {
+              padding: 3px 8px;
+              font-size: 10px;
+            }
+          }
+
+          .priorityBadge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: $font-size-xs;
+            font-weight: 500;
+            white-space: nowrap;
+            display: inline-block;
+
+            @media (max-width: 768px) {
+              padding: 3px 8px;
+              font-size: 10px;
+            }
+          }
         }
       }
 
-      .statusBadge {
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: $font-size-xs;
-        font-weight: 500;
-        align-self: flex-start;
-        white-space: nowrap;
-        display: inline-block;
+      .ownerInfo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: $text-secondary;
+        font-size: $font-size-sm;
 
-        @media (max-width: 768px) {
-          padding: 3px 8px;
-          font-size: 10px;
+        svg {
+          opacity: 0.7;
+          width: 12px;
+          height: 12px;
+        }
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }
@@ -483,6 +644,121 @@
     }
   }
 
+  .projectMetrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: $border-radius-md;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 10px;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .metricLabel {
+        font-size: $font-size-xs;
+        color: $text-secondary;
+        white-space: nowrap;
+      }
+
+      .metricValue {
+        font-size: $font-size-md;
+        font-weight: 600;
+        color: $text-main;
+      }
+    }
+  }
+
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .tag {
+      padding: 3px 8px;
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
+      font-size: $font-size-xs;
+      color: $text-secondary;
+      white-space: nowrap;
+    }
+
+    .moreTags {
+      padding: 3px 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      font-size: $font-size-xs;
+      color: $text-muted;
+    }
+  }
+
+  .bottomSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: auto;
+
+    .actionButtons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+
+      .quickAction {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(102, 126, 234, 0.08);
+        border: 1px solid rgba(102, 126, 234, 0.15);
+        border-radius: $border-radius-md;
+        color: $text-secondary;
+        font-size: $font-size-xs;
+        font-weight: 500;
+        cursor: pointer;
+        transition: $transition-default;
+        white-space: nowrap;
+
+        svg {
+          width: 14px;
+          height: 14px;
+          opacity: 0.8;
+        }
+      }
+
+      .projectAction {
+        margin-left: auto;
+        padding: 8px 16px;
+        background: color-mix(in srgb, $primary-purple, transparent 90%);
+        border: 1px solid color-mix(in srgb, $primary-purple, transparent 70%);
+        border-radius: $border-radius-md;
+        color: $primary-purple;
+        font-size: $font-size-sm;
+        font-weight: 500;
+        cursor: pointer;
+        transition: $transition-default;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+    }
+  }
+
   .progressSection {
     display: flex;
     flex-direction: column;
@@ -538,64 +814,140 @@
       gap: 12px;
     }
 
-    .dateInfo {
+    .footerLeft {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 6px;
-      color: rgba(255, 255, 255, 0.5);
-      font-size: $font-size-xs;
 
-      @media (max-width: 768px) {
-        font-size: 11px;
-      }
-
-      svg {
-        opacity: 0.6;
-        width: 12px;
-        height: 12px;
+      .dateInfo,
+      .deadlineInfo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: $font-size-xs;
 
         @media (max-width: 768px) {
-          width: 10px;
-          height: 10px;
+          font-size: 11px;
         }
+
+        svg {
+          opacity: 0.6;
+          width: 12px;
+          height: 12px;
+
+          @media (max-width: 768px) {
+            width: 10px;
+            height: 10px;
+          }
+        }
+      }
+
+      .deadlineInfo {
+        color: #fdc700; // цвет для дедлайна
       }
     }
 
-    .projectAction {
-      padding: 8px 16px;
-      background: color-mix(in srgb, $primary-purple, transparent 90%);
-      border: 1px solid color-mix(in srgb, $primary-purple, transparent 70%);
-      border-radius: $border-radius-md;
-      color: $primary-purple;
-      font-size: $font-size-sm;
-      font-weight: 500;
-      cursor: pointer;
-      transition: $transition-default;
-      font-family: inherit;
-      white-space: nowrap;
+    .footerRight {
+      display: flex;
+      align-items: center;
+      gap: 8px;
 
-      &:hover {
-        background: color-mix(in srgb, $primary-purple, transparent 80%);
-        border-color: color-mix(in srgb, $primary-purple, transparent 50%);
-        color: color-mix(in srgb, $primary-purple, white 10%);
+      .secondaryAction {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        color: $text-secondary;
+        cursor: pointer;
+        transition: $transition-default;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.2);
+          color: $text-main;
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
       }
 
-      @media (max-width: 768px) {
-        padding: 6px 14px;
-        font-size: $font-size-xs;
-        align-self: flex-end;
+      .projectAction {
+        padding: 8px 16px;
+        background: color-mix(in srgb, $primary-purple, transparent 90%);
+        border: 1px solid color-mix(in srgb, $primary-purple, transparent 70%);
+        border-radius: $border-radius-md;
+        color: $primary-purple;
+        font-size: $font-size-sm;
+        font-weight: 500;
+        cursor: pointer;
+        transition: $transition-default;
+        font-family: inherit;
+        white-space: nowrap;
+
+        &:hover {
+          background: color-mix(in srgb, $primary-purple, transparent 80%);
+          border-color: color-mix(in srgb, $primary-purple, transparent 50%);
+          color: color-mix(in srgb, $primary-purple, white 10%);
+        }
+
+        @media (max-width: 768px) {
+          padding: 6px 14px;
+          font-size: $font-size-xs;
+        }
       }
     }
   }
 }
 
-/* --- Статусы проектов --- */
-.statusFilters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-  width: 100%;
+/* --- Дополнительные улучшения --- */
+.projectCard {
+  transition: $transition-smooth;
+
+  .progressFill {
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+/* --- Адаптивность для маленьких экранов --- */
+@media (max-width: 480px) {
+  .cardFooter {
+    .footerRight {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  .badgeContainer {
+    .statusBadge,
+    .priorityBadge {
+      font-size: 9px !important;
+      padding: 2px 6px !important;
+    }
+  }
+}
+
+/* --- Улучшенные тени для карточек --- */
+.projectCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(102, 126, 234, 0.3),
+    transparent
+  );
+  z-index: 1;
 }
 
 /* --- Анимации --- */

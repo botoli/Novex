@@ -17,7 +17,7 @@ interface HeroProps {
 
 interface Project {
   id: number;
-  tittle: string;
+  title: string;
   description: string;
   owner_id: number;
   created_at: string;
@@ -247,7 +247,7 @@ const Hero: React.FC<HeroProps> = ({
     // Генерируем название репозитория на основе названия проекта
     const repositoryName =
       project.repository ||
-      `github.com/org/${project.tittle.toLowerCase().replace(/\s+/g, "-")}`;
+      `github.com/org/${project.title.toLowerCase().replace(/\s+/g, "-")}`;
     const activeTasksCount =
       project.activeTasks !== undefined
         ? project.activeTasks
@@ -263,7 +263,7 @@ const Hero: React.FC<HeroProps> = ({
       >
         <div className={style.projectHeader}>
           <div className={style.projectName}>
-            <h3>{project.tittle}</h3>
+            <h3>{project.title}</h3>
             <span
               className={
                 project.status === "active"
@@ -927,14 +927,15 @@ const Hero: React.FC<HeroProps> = ({
                   <div className={style.analyticsTitle}>Аналитика</div>
                   <p className={style.analyticsText}>
                     Активных проектов: {statusBlocks[1]?.value ?? 0}. Завершено:{" "}
-                    {statusBlocks[2]?.value ?? 0}. Всего: {statusBlocks[0]?.value ?? 0}.
+                    {statusBlocks[2]?.value ?? 0}. Всего:{" "}
+                    {statusBlocks[0]?.value ?? 0}.
                   </p>
                 </div>
                 <div className={style.analyticsCard}>
                   <div className={style.analyticsTitle}>Отчет</div>
                   <p className={style.analyticsText}>
-                    Краткий отчет сформирован по текущим проектам. Проверьте задачи и
-                    статусы перед планированием спринта.
+                    Краткий отчет сформирован по текущим проектам. Проверьте
+                    задачи и статусы перед планированием спринта.
                   </p>
                 </div>
               </div>
@@ -988,4 +989,3 @@ const Hero: React.FC<HeroProps> = ({
 };
 
 export default Hero;
-

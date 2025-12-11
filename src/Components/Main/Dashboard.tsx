@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import styles from "../../style/Main/Dashboard.module.scss";
+import { apiService } from "../../services/api.ts";
+import type { Task as ApiTask } from "../../services/api.ts";
 
 interface Task {
   id: number;
@@ -16,61 +18,76 @@ const Dashboard: React.FC = () => {
     "all" | "low" | "medium" | "high" | "critical"
   >("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Задачи
-  const tasks: Task[] = [
-    {
-      id: 1,
-      title: "Реализовать авторизацию через OAuth",
-      status: "in-progress",
-      assignee: "Иван Иванов",
-      assigneeAvatar: "ИИ",
-      dueDate: "2024-01-20",
-      priority: "high",
-    },
-    {
-      id: 2,
-      title: "Исправить баг с отображением карточек",
-      status: "todo",
-      assignee: "Петр Петров",
-      assigneeAvatar: "ПП",
-      dueDate: "2024-01-18",
-      priority: "medium",
-    },
-    {
-      id: 3,
-      title: "Добавить тесты для API",
-      status: "done",
-      assignee: "Анна Сидорова",
-      assigneeAvatar: "АС",
-      priority: "low",
-    },
-    {
-      id: 4,
-      title: "Обновить дизайн формы входа",
-      status: "in-progress",
-      assignee: "Михаил Кузнецов",
-      assigneeAvatar: "МК",
-      dueDate: "2024-01-22",
-      priority: "critical",
-    },
-    {
-      id: 5,
-      title: "Оптимизировать производительность базы данных",
-      status: "todo",
-      assignee: "Иван Иванов",
-      assigneeAvatar: "ИИ",
-      priority: "high",
-    },
-    {
-      id: 6,
-      title: "Добавить документацию API",
-      status: "todo",
-      assignee: "Петр Петров",
-      assigneeAvatar: "ПП",
-      priority: "low",
-    },
-  ];
+  // Загрузка задач с бэкенда
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getTasks();
+        // Преобразование данных из API в интерфейс компонента
+        const transformed: Task[] = data.map((task: ApiTask) => {
+          // Маппинг статуса
+          let status: "todo" | "in-progress" | "done";
+          switch (task.status?.toLowerCase()) {
+            case "completed":
+            case "done":
+              status = "done";
+              break;
+            case "in_progress":
+            case "in-progress":
+              status = "in-progress";
+              break;
+            default:
+              status = "todo";
+          }
+
+          // Маппинг приоритета (ожидаем low, medium, high, critical)
+          const priority = task.priority as
+            | "low"
+            | "medium"
+            | "high"
+            | "critical";
+
+          // Имя назначенного
+          const assigneeName = task.assignee?.name || "Не назначено";
+          // Аватар - первые буквы имени
+          const assigneeAvatar = assigneeName
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase();
+
+          // Дата в формате YYYY-MM-DD
+          const dueDate = task.due_date
+            ? task.due_date.split(" ")[0]
+            : undefined;
+
+          return {
+            id: task.id,
+            title: task.title,
+            status,
+            assignee: assigneeName,
+            assigneeAvatar,
+            dueDate,
+            priority,
+          };
+        });
+        setTasks(transformed);
+        setError(null);
+      } catch (err) {
+        console.error("Ошибка загрузки задач:", err);
+        setError("Не удалось загрузить задачи. Попробуйте позже.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 };
 
@@ -91,7 +108,7 @@ const Dashboard: React.FC = () => {
     });
 
     return sorted;
-  }, [priorityFilter, sortOrder]);
+  }, [tasks, priorityFilter, sortOrder]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -295,65 +312,85 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
 
-          <div className={styles.tasksList}>
-            {filteredAndSortedTasks.map((task) => (
-              <div
-                key={task.id}
-                className={styles.taskItem}
-                style={{
-                  borderLeft: `4px solid ${getPriorityColor(task.priority)}`,
-                }}
-              >
-                <div className={styles.taskHeader}>
-                  <div className={styles.taskStatus}>
-                    <span style={getStatusBadgeStyle(task.status)}>
-                      <span
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          backgroundColor: getStatusColor(task.status),
-                          display: "inline-block",
-                        }}
-                      />
-                      {getStatusText(task.status)}
-                    </span>
-                  </div>
-                  <div
-                    className={styles.priorityBadge}
-                    style={{
-                      backgroundColor: `${getPriorityColor(task.priority)}20`,
-                      borderColor: getPriorityColor(task.priority),
-                      color: getPriorityColor(task.priority),
-                    }}
-                  >
-                    {getPriorityText(task.priority)}
-                  </div>
-                </div>
-                <h3 className={styles.taskTitle}>{task.title}</h3>
-                <div className={styles.taskFooter}>
-                  <div className={styles.taskAssignee}>
-                    <div className={styles.assigneeAvatar}>
-                      {task.assigneeAvatar ||
-                        task.assignee
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                    </div>
-                    <span>{task.assignee}</span>
-                  </div>
-                  {task.dueDate && (
-                    <span className={styles.taskDueDate}>
-                      {new Date(task.dueDate).toLocaleDateString("ru-RU", {
-                        day: "numeric",
-                        month: "short",
-                      })}
-                    </span>
-                  )}
-                </div>
+          {loading ? (
+            <div className={styles.tasksList}>
+              <div className={styles.taskItem} style={{ justifyContent: 'center', alignItems: 'center', padding: '2rem' }}>
+                Загрузка задач...
               </div>
-            ))}
-          </div>
+            </div>
+          ) : error ? (
+            <div className={styles.tasksList}>
+              <div className={styles.taskItem} style={{ borderLeftColor: '#FF6467', color: '#FF6467' }}>
+                {error}
+              </div>
+            </div>
+          ) : filteredAndSortedTasks.length === 0 ? (
+            <div className={styles.tasksList}>
+              <div className={styles.taskItem} style={{ justifyContent: 'center', alignItems: 'center', padding: '2rem' }}>
+                Нет задач для отображения
+              </div>
+            </div>
+          ) : (
+            <div className={styles.tasksList}>
+              {filteredAndSortedTasks.map((task) => (
+                <div
+                  key={task.id}
+                  className={styles.taskItem}
+                  style={{
+                    borderLeft: `4px solid ${getPriorityColor(task.priority)}`,
+                  }}
+                >
+                  <div className={styles.taskHeader}>
+                    <div className={styles.taskStatus}>
+                      <span style={getStatusBadgeStyle(task.status)}>
+                        <span
+                          style={{
+                            width: "8px",
+                            height: "8px",
+                            borderRadius: "50%",
+                            backgroundColor: getStatusColor(task.status),
+                            display: "inline-block",
+                          }}
+                        />
+                        {getStatusText(task.status)}
+                      </span>
+                    </div>
+                    <div
+                      className={styles.priorityBadge}
+                      style={{
+                        backgroundColor: `${getPriorityColor(task.priority)}20`,
+                        borderColor: getPriorityColor(task.priority),
+                        color: getPriorityColor(task.priority),
+                      }}
+                    >
+                      {getPriorityText(task.priority)}
+                    </div>
+                  </div>
+                  <h3 className={styles.taskTitle}>{task.title}</h3>
+                  <div className={styles.taskFooter}>
+                    <div className={styles.taskAssignee}>
+                      <div className={styles.assigneeAvatar}>
+                        {task.assigneeAvatar ||
+                          task.assignee
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                      </div>
+                      <span>{task.assignee}</span>
+                    </div>
+                    {task.dueDate && (
+                      <span className={styles.taskDueDate}>
+                        {new Date(task.dueDate).toLocaleDateString("ru-RU", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

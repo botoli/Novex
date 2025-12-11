@@ -105,7 +105,7 @@ function MainPage() {
     try {
       const project = await ProjectService.getProjectById(projectId, user?.id);
       setSelectedProjectId(projectId);
-      setSelectedProjectTitle(project.tittle);
+      setSelectedProjectTitle(project.title);
       setCurrentPage("schedule");
     } catch (error) {
       console.error("Ошибка загрузки проекта:", error);

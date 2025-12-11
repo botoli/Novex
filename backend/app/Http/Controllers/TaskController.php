@@ -11,7 +11,7 @@ class TaskController
 
     public function index(Request $request)
     {
-        $query = Task::query();
+        $query = Task::with(['assignee', 'creator']);
 
         if ($request->has('project_id')) {
             $query->where('project_id', $request->project_id);
@@ -144,7 +144,8 @@ class TaskController
 
     public function upcoming(Request $request)
     {
-        $query = Task::where('due_date', '>=', now())
+        $query = Task::with(['assignee', 'creator'])
+                    ->where('due_date', '>=', now())
                     ->where('status', '!=', 'completed')
                     ->orderBy('due_date', 'asc');
 
@@ -171,7 +172,8 @@ class TaskController
 
         $query = $request->get('query');
 
-        $tasks = Task::where('title', 'LIKE', "%{$query}%")
+        $tasks = Task::with(['assignee', 'creator'])
+                    ->where('title', 'LIKE', "%{$query}%")
                     ->orWhere('description', 'LIKE', "%{$query}%")
                     ->orWhereJsonContains('tags', [$query])
                     ->orderBy('created_at', 'desc')
