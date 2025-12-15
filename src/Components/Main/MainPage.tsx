@@ -1,20 +1,22 @@
 // MainPage.tsx
-import React, { useState } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/user.js";
 import LeftPanel from "./LeftPanel";
 import Hero from "./Hero";
-import Dashboard from "./Dashboard";
-import TasksPage from "./TasksPage";
-import SettingsPage from "./SettingsPage";
-import ProjectsPage from "./ProjectsPage";
-import ProjectDetailPage from "./ProjectDetailPage";
-import TeamChat from "./TeamChat";
-import Schedule from "./Schedule";
-import QuickNote from "./QuickNote";
 import { ProjectService } from "../../assets/MockData/index.js";
 import style from "../../style/Main/MainPage.module.scss";
-import AIAssistantPage from "./AIAssistantPage";
+
+// Ленивая загрузка страниц
+const Dashboard = lazy(() => import("./Dashboard"));
+const TasksPage = lazy(() => import("./TasksPage"));
+const SettingsPage = lazy(() => import("./SettingsPage"));
+const ProjectsPage = lazy(() => import("./ProjectsPage"));
+const ProjectDetailPage = lazy(() => import("./ProjectDetailPage"));
+const TeamChat = lazy(() => import("./TeamChat"));
+const Schedule = lazy(() => import("./Schedule"));
+const QuickNote = lazy(() => import("./QuickNote"));
+const AIAssistantPage = lazy(() => import("./AIAssistantPage"));
 
 type Page =
   | "main"
@@ -221,7 +223,11 @@ function MainPage() {
           projectRefreshKey={projectRefreshKey}
         />
       </div>
-      <div className={style.contentContainer}>{renderContent()}</div>
+      <div className={style.contentContainer}>
+        <Suspense fallback={<div className={style.loadingFallback}>Загрузка...</div>}>
+          {renderContent()}
+        </Suspense>
+      </div>
     </div>
   );
 }

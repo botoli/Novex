@@ -56,3 +56,12 @@
     border-radius: 4px;
   }
 }
+
+.loadingFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: $text-secondary;
+  font-size: 16px;
+}

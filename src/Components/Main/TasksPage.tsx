@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/user.js";
-import { apiService } from "../../services/api.ts";
-import type { Task as ApiTask } from "../../services/api.ts";
+import { taskService } from "../../services/taskService.ts";
+import type { Task as ApiTask } from "../../services/taskService.ts";
 import styles from "../../style/Main/SimplePage.module.scss";
 
 type StatusTone = "info" | "warning" | "success";
@@ -41,7 +41,7 @@ const TasksPage: React.FC = () => {
       setError("");
       try {
         // Загружаем реальные задачи, назначенные пользователю или созданные им
-        const apiTasks = await apiService.getTasks({ assigned_to: user.id });
+        const apiTasks = await taskService.getTasks({ assigned_to: user.id });
         // Преобразуем в TaskCard
         const transformed: TaskCard[] = apiTasks.map((task: ApiTask) => {
           // Определяем статус для отображения
