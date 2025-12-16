@@ -11,12 +11,120 @@
   flex-direction: column;
   position: relative;
   border-right: 1px solid $border-color;
+  transition: width $animation-duration-normal $animation-timing-ease,
+    min-width $animation-duration-normal $animation-timing-ease;
+
+  &.collapsed {
+    width: 80px;
+    min-width: 80px;
+
+    .header {
+      padding: 24px 12px 20px;
+      align-items: center;
+
+      .naming {
+        justify-content: center;
+        margin-bottom: 0;
+
+        .svgbox {
+          width: 40px;
+          height: 40px;
+          svg {
+            width: 40px;
+            height: 40px;
+          }
+        }
+
+        .namingtxt {
+          display: none;
+        }
+      }
+
+      .searchcont {
+        display: none;
+      }
+
+      .collapseToggleButton {
+        position: static;
+        margin-top: 8px;
+        align-self: center;
+      }
+    }
+
+    .category {
+      padding: 12px;
+
+      .categoryItem {
+        justify-content: center;
+        padding: 12px;
+        gap: 0;
+
+        p {
+          display: none;
+        }
+
+        .addProjectBtn {
+          display: none;
+        }
+
+        .themeName {
+          display: none;
+        }
+
+        .themeDropdown {
+          display: none;
+        }
+      }
+
+      .projectsCategoryContainer {
+        .projectsListSection,
+        .addProjectBtn {
+          display: none;
+        }
+      }
+    }
+
+    .suggestions {
+      display: none;
+    }
+  }
 }
 
 // Header
 .header {
   padding: 24px 20px 20px;
   border-bottom: 1px solid $border-light;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.collapseToggleButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: $primary-color;
+  border: none;
+  padding: 6px;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  color: $text-secondary;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  &:hover {
+    color: $text-main;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.1s ease;
+  }
 }
 
 .naming {
@@ -227,6 +335,34 @@
   background: color-mix(in srgb, $primary-color, transparent 88%);
   color: $text-main;
   font-weight: 600;
+}
+
+.themeColorPreview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.themeColorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.themeItem {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  user-select: none;
 }
 
 .addProjectBtn {

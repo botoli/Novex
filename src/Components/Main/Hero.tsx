@@ -954,4 +954,4 @@ const Hero: React.FC<HeroProps> = ({
   );
 };
 
-export default Hero;
+export default React.memo(Hero);

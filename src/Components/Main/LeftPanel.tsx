@@ -58,9 +58,24 @@ function LeftPanel({
   const [projectsLoading, setProjectsLoading] = useState(true);
   const [isProjectsListCollapsed, setIsProjectsListCollapsed] = useState(false);
   const [isAIPanelCollapsed, setIsAIPanelCollapsed] = useState(true); // По умолчанию свернуто
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false); // Состояние свертывания всей панели
 
   // Список доступных тем (берём из src/assets/LeftPanel/themes.ts)
   const themes = [...themeNames];
+
+  // Функция для получения основных цветов темы для предпросмотра
+  const getThemePreviewColors = (themeName: string): string[] => {
+    const theme = themesMap[themeName];
+    if (!theme) return [];
+    // Возьмем основные цвета для предпросмотра
+    const colors = [
+      theme['bg-primary'],
+      theme['accent-primary'],
+      theme['accent-secondary'],
+      theme['border-primary'],
+    ].filter(Boolean);
+    return colors.slice(0, 4); // максимум 4 цвета
+  };
 
   // Выбранная тема (инициализация из localStorage)
   const [selectedTheme, setSelectedTheme] = useState<string>(() => {
@@ -232,6 +247,10 @@ function LeftPanel({
     setIsAIPanelCollapsed(!isAIPanelCollapsed);
   };
 
+  const togglePanelCollapsed = () => {
+    setIsPanelCollapsed(!isPanelCollapsed);
+  };
+
   const toggleTheme = () => {
     setIsThemeMenuOpen((s) => !s);
   };
@@ -307,7 +326,7 @@ function LeftPanel({
 
   return (
     <>
-      <div className={style.main}>
+      <div className={`${style.main} ${isPanelCollapsed ? style.collapsed : ""}`}>
         <div className={style.header}>
           <div className={style.naming}>
             <div className={style.svgbox}>
@@ -361,6 +380,23 @@ function LeftPanel({
             </svg>
             <input type="text" placeholder="Поиск" />
           </div>
+          <button
+            className={style.collapseToggleButton}
+            onClick={togglePanelCollapsed}
+            title={isPanelCollapsed ? "Развернуть панель" : "Свернуть панель"}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className={isPanelCollapsed ? style.collapsedIcon : ""}
+            >
+              <path d={isPanelCollapsed ? "M9 18l6-6-6-6" : "M15 18l-6-6 6-6"} />
+            </svg>
+          </button>
         </div>
 
         <div className={style.category}>
@@ -525,21 +561,35 @@ function LeftPanel({
 
                     {isThemeMenuOpen && (
                       <div className={style.themeDropdown} role="menu">
-                        {themes.map((t) => (
-                          <button
-                            key={t}
-                            type="button"
-                            className={`${style.themeItem} ${
-                              selectedTheme === t ? style.themeActive : ""
-                            }`}
-                            onClick={(ev) => {
-                              ev.stopPropagation();
-                              handleThemeChange(t);
-                            }}
-                          >
-                            {t}
-                          </button>
-                        ))}
+                        {themes.map((t) => {
+                          const previewColors = getThemePreviewColors(t);
+                          return (
+                            <button
+                              key={t}
+                              type="button"
+                              className={`${style.themeItem} ${
+                                selectedTheme === t ? style.themeActive : ""
+                              }`}
+                              onClick={(ev) => {
+                                ev.stopPropagation();
+                                handleThemeChange(t);
+                              }}
+                            >
+                              <span>{t}</span>
+                              {previewColors.length > 0 && (
+                                <div className={style.themeColorPreview}>
+                                  {previewColors.map((color, idx) => (
+                                    <div
+                                      key={idx}
+                                      className={style.themeColorDot}
+                                      style={{ backgroundColor: color }}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -847,4 +897,4 @@ function LeftPanel({
   );
 }
 
-export default LeftPanel;
+export default React.memo(LeftPanel);

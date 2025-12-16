@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import styles from "../../style/Main/Dashboard.module.scss";
-import { apiService } from "../../services/api.ts";
-import type { Task as ApiTask } from "../../services/api.ts";
+import { taskService } from "../../services/taskService.ts";
+import type { Task as ApiTask } from "../../services/taskService.ts";
 
 interface Task {
   id: number;
@@ -35,7 +35,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId, refreshKey }) => {
       if (projectId) {
         params.project_id = projectId;
       }
-      const data = await apiService.getTasks(params);
+      const data = await taskService.getTasks(params);
       // Преобразование данных из API в интерфейс компонента
       const transformed: Task[] = data.map((task: ApiTask) => {
         // Маппинг статуса
@@ -135,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId, refreshKey }) => {
     try {
       console.log("Удаление задачи", taskId);
       // Вызов API удаления задачи
-      await apiService.deleteTask(taskId);
+      await taskService.deleteTask(taskId);
       // Оптимистичное обновление: удаляем задачу из локального состояния
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
       // Перезагружаем задачи с сервера для синхронизации
@@ -496,4 +496,4 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId, refreshKey }) => {
   );
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);

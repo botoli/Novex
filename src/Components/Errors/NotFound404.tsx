@@ -8,16 +8,16 @@ function NotFound404() {
         <h1 className={style.glitch} data-text="404">
           Ошибка 404
         </h1>
-        <p className={style.subtitle}>Страница не существует</p>
-
+        <div className={style.imageWrapper}>
+          <img
+            src="public/d993a2e28da3bc76d7b33c492c39e2aa.jpg"
+            alt="Не думаю что страница существует "
+            className={style.img}
+          />
+          <div className={style.memeText}>Не думаю что страница существует</div>
+        </div>
         <a href="/" className={style.homeButton}>
-          <span>Вернуться на главную</span>
-          <svg className={style.arrow} viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
-            />
-          </svg>
+          <span>Вернуться назад</span>
         </a>
       </div>
     </div>
