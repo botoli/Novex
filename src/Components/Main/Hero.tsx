@@ -249,7 +249,7 @@ const Hero: React.FC<HeroProps> = ({
     // Генерируем название репозитория на основе названия проекта
     const repositoryName =
       project.repository ||
-      `github.com/org/${project.title.toLowerCase().replace(/\s+/g, "-")}`;
+      `github.com/org/${project.title?.toLowerCase().replace(/\s+/g, "-")}`;
     const activeTasksCount =
       project.activeTasks !== undefined
         ? project.activeTasks
